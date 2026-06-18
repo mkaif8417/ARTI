@@ -12,6 +12,11 @@ const Home = () => {
         You're signed in. This is a placeholder — the product storefront and
         admin dashboard get built next.
       </p>
+      <div className="min-h-screen flex items-center justify-center">
+      <h1 className="text-4xl font-bold text-blue-600">
+        Tailwind is Working!
+      </h1>
+    </div>
       <button
         className="auth-submit"
         style={{ width: 'auto', padding: '10px 22px' }}
