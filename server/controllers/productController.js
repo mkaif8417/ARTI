@@ -31,6 +31,8 @@ const getProductById = async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = async (req, res) => {
+  console.log('BODY:', req.body);
+  console.log('FILE:', req.file);
   try {
     const { name, description, price, category, stock } = req.body;
 
