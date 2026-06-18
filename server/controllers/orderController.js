@@ -1,89 +1,121 @@
-const mongoose = require('mongoose');
 
+const Order = require('../models/Order');
+// @desc    Create new order
+// @route   POST /api/orders
+// @access  Private
+const createOrder = async (req, res) => {
+  try {
+    const { orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, totalPrice } = req.body;
 
-const orderItemSchema = new mongoose.Schema({
-  product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    default: 1,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  image: {
-    type: String,
-  },
-});
+    if (!orderItems || orderItems.length === 0) {
+      return res.status(400).json({ message: 'No order items' });
+    }
 
-const shippingAddressSchema = new mongoose.Schema({
-  fullName: { type: String, required: true },
-  address: { type: String, required: true },
-  city: { type: String, required: true },
-  postalCode: { type: String, required: true },
-  state: { type: String },
-  country: { type: String, required: true },
-  phone: { type: String, required: true },
-});
+    const order = new Order({
+      user: req.user._id,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      shippingPrice,
+      totalPrice,
+    });
 
-const orderSchema = new mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    orderItems: [orderItemSchema],
-    shippingAddress: shippingAddressSchema,
-    paymentMethod: {
-      type: String,
-      required: true,
-      enum: ['razorpay', 'cod'],
-    },
-    paymentResult: {
-      orderId: { type: String },
-      paymentId: { type: String },
-      signature: { type: String },
-      status: { type: String },
-    },
-    itemsPrice: {
-      type: Number,
-      default: 0,
-    },
-    shippingPrice: {
-      type: Number,
-      default: 0,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    isPaid: {
-      type: Boolean,
-      default: false,
-    },
-    paidAt: {
-      type: Date,
-    },
-    status: {
-      type: String,
-      enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
-      default: 'pending',
-    },
-  },
-  {
-    timestamps: true,
+    const createdOrder = await order.save();
+    res.status(201).json(createdOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-);
+};
 
-module.exports = mongoose.model('Order', orderSchema);
+// @desc    Get logged-in user's orders
+// @route   GET /api/orders/myorders
+// @access  Private
+const getMyOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user._id });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get order by ID
+// @route   GET /api/orders/:id
+// @access  Private
+const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id).populate('user', 'name email');
+
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    // Allow access only to owner or admin
+    if (order.user._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get all orders (admin)
+// @route   GET /api/orders
+// @access  Private/Admin
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().populate('user', 'name email');
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Update order status (admin)
+// @route   PUT /api/orders/:id/status
+// @access  Private/Admin
+const updateOrderStatus = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    order.status = req.body.status || order.status;
+
+    if (req.body.status === 'delivered') {
+      order.isPaid = true;
+      order.paidAt = Date.now();
+    }
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Delete order (admin)
+// @route   DELETE /api/orders/:id
+// @access  Private/Admin
+const deleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    await order.deleteOne();
+    res.json({ message: 'Order removed' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  createOrder,
+  getMyOrders,
+  getOrderById,
+  getAllOrders,
+  updateOrderStatus,
+  deleteOrder,
+};

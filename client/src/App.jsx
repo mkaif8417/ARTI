@@ -1,16 +1,20 @@
-import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from './assets/vite.svg'
-import './App.css'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
+import Home from './pages/Home.jsx';
+import { useAuth } from './context/AuthContext.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { user } = useAuth();
 
   return (
-    <>
-     <h1>welcome</h1>
-    </>
-  )
+    <Routes>
+      <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+      <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+      <Route path="/" element={user ? <Home /> : <Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;

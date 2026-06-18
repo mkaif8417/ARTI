@@ -1,4 +1,5 @@
-const razorpay = require('../config/razorpay');
+// const razorpay = require('../config/razorpay');
+const getRazorpay = require('../config/razorpay');
 const crypto = require('crypto');
 
 // @desc    Create a Razorpay order (before payment)
