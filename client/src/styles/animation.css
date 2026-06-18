@@ -1,0 +1,49 @@
+/* cross button stylist */
+.cross-line-1,
+.cross-line-2 {
+  stroke-dasharray: 34;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.35s ease;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.cross-svg .cross-line-1 {
+  animation: drawLine1 0.35s ease forwards;
+}
+
+.cross-svg .cross-line-2 {
+  animation: drawLine2 0.35s ease 0.15s both;
+}
+
+/* On hover: each line slides outward along its own diagonal direction */
+.cross-svg:hover .cross-line-1 {
+  animation: slideTopLeft 0.3s ease forwards;
+}
+
+.cross-svg:hover .cross-line-2 {
+  animation: slideTopRight 0.3s ease forwards;
+}
+
+@keyframes drawLine1 {
+  from { stroke-dashoffset: 34; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes drawLine2 {
+  from { stroke-dashoffset: 34; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* Line 1: goes top-left to bottom-right → slide along that axis */
+@keyframes slideTopLeft {
+  0%   { transform: translate(0px, 0px); opacity: 1; }
+  100% { transform: translate(-6px, -6px); opacity: 0.5; }
+}
+
+/* Line 2: goes top-right to bottom-left → slide along that axis */
+@keyframes slideTopRight {
+  0%   { transform: translate(0px, 0px); opacity: 1; }
+  100% { transform: translate(6px, -6px); opacity: 0.5; }
+}
+/* cross button stylle end */

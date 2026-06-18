@@ -4,11 +4,14 @@ import Register from './pages/Register.jsx';
 import Home from './pages/Home.jsx';
 import AdminApp from './admin/AdminApp.jsx';
 import { useAuth } from './context/AuthContext.jsx';
+import Navbar from './components/Navbar.jsx';
 
 function App() {
   const { user } = useAuth();
 
   return (
+    <>
+      <Navbar/>
     <Routes>
       {/* Public Home Page */}
       <Route path="/" element={<Home />} />
@@ -29,6 +32,7 @@ function App() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   );
 }
 
