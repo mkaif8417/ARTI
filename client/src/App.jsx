@@ -10,13 +10,21 @@ function App() {
 
   return (
     <Routes>
-   
-      {/* Customer routes */}
-      <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
-      <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
-      <Route path="/" element={user ? <Home /> : <Navigate to="/login" replace />} />
+      {/* Public Home Page */}
+      <Route path="/" element={<Home />} />
 
-      {/* Admin routes */}
+      {/* Auth Pages */}
+      <Route
+        path="/login"
+        element={user ? <Navigate to="/" replace /> : <Login />}
+      />
+
+      <Route
+        path="/register"
+        element={user ? <Navigate to="/" replace /> : <Register />}
+      />
+
+      {/* Admin Routes */}
       <Route path="/admin/*" element={<AdminApp />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />

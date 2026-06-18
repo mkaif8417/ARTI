@@ -12,21 +12,25 @@ const Categories = () => {
 
   useEffect(() => { load(); }, []);
 
-  const handleAdd = async (e) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-    setError('');
-    setLoading(true);
-    const data = await createCategory(name.trim());
-    if (data._id) {
-      setName('');
-      load();
-    } else {
-      setError(data.message || 'Failed to create category.');
-    }
-    setLoading(false);
-  };
+const handleAdd = async (e) => {
+  e.preventDefault();
 
+  if (!name.trim()) return;
+
+  setError('');
+  setLoading(true);
+
+  const data = await createCategory(name.trim());
+
+  if (data._id) {
+    setName('');
+    load();
+  } else {
+    setError(data.message || 'Failed to create category.');
+  }
+
+  setLoading(false);
+};
   return (
     <div className="max-w-xl">
       <h2 className="text-xl font-bold text-white mb-6">Categories</h2>
@@ -37,12 +41,14 @@ const Categories = () => {
         {error && <div className="mb-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">{error}</div>}
         <div className="flex gap-3">
           <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Electronics"
-            className="flex-1 px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-          />
+  type="text"
+  value={name}
+  onChange={(e) => {
+ setName(e.target.value);
+  }}
+  placeholder="e.g. Electronics"
+  className="flex-1 px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+/>
           <button
             type="submit"
             disabled={loading}
