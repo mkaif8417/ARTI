@@ -6,9 +6,10 @@
   "password": "123456"
 }
 #role:admin
+url:http://localhost:5173/admin/login
 {
   "name": "admin",
-  "email": "admin@example.com",
+  "email": "admin@test.com",
   "password": "123456",
   "role":"admin"
 
