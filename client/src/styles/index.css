@@ -1,6 +1,19 @@
-/* src/styles/index.css */
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-bg:          #102B2A;
+  --color-bg-card:     #152F2E;
+  --color-gold:        #C9A581;
+  --color-gold-muted:  rgba(201, 165, 129, 0.35);
+  --color-cream:       #F5EDD8;
+  --color-cream-mid:   rgba(245, 237, 216, 0.55);
+  --color-cream-low:   rgba(245, 237, 216, 0.3);
+  --color-line:        rgba(201, 165, 129, 0.15);
+
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'Inter', sans-serif;
+}
 
 :root {
   --color-bg:          #102B2A;
