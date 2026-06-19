@@ -1,163 +1,333 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-// import logo from "../../assets/images/final_logo.png";
-import "../styles/animation.css";
+// src/components/Navbar.jsx
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+const C = {
+  bg:        '#102B2A',
+  bgDrawer:  '#0e2726',
+  gold:      '#C9A581',
+  goldMuted: 'rgba(201,165,129,0.3)',
+  cream:     '#F5EDD8',
+  creamMid:  'rgba(245,237,216,0.55)',
+  creamLow:  'rgba(245,237,216,0.28)',
+  line:      'rgba(201,165,129,0.15)',
+};
+
+const navLinks = [
+  { label: 'Collections', to: '/products' },
+  { label: 'Textiles',    to: '/products?category=textiles' },
+  { label: 'Artisans',   to: '/artisans' },
+  { label: 'Story',      to: '/story' },
+];
+
+const SearchIcon = () => (
+  <svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" strokeLinecap="round"/>
+  </svg>
+);
+const HeartIcon = ({ size = 17 }) => (
+  <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </svg>
+);
+const BagIcon = ({ size = 17 }) => (
+  <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <path d="M16 10a4 4 0 0 1-8 0"/>
+  </svg>
+);
 
 const Navbar = () => {
-    const [hovered, setHovered] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [crossHovered, setCrossHovered] = useState(false); // ✅ moved inside
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
-    const links = [
-        { name: "Home", path: "/" },
-        { name: "About", path: "/about" },
-        { name: "Menu", path: "/menu" },
-        { name: "Gallery", path: "/gallery" },
-        { name: "Reservation", path: "/reservation" },
-        { name: "Contact", path: "/contact" },
-    ];
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setOpen(false);
+  };
 
-    return (
-        <header className="fixed top-0 left-0 w-full z-50 ">
+  const close = () => setOpen(false);
 
-            <div className="relative w-full">
+  return (
+    <>
+      <style>{`
+        .arti-nav-link {
+          font-size: 11px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: rgba(245,237,216,0.55);
+          text-decoration: none;
+          font-family: 'Inter', sans-serif;
+          transition: color 0.2s;
+        }
+        .arti-nav-link:hover { color: #C9A581; }
 
-                {/* Top Left */}
-                <div className=" absolute  top-1 left-4 md:left-8 lg:left-12 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 border-t border-l border-[#C9A581]"></div>
+        .arti-icon-btn {
+          color: rgba(245,237,216,0.55);
+          display: flex;
+          align-items: center;
+          text-decoration: none;
+          transition: color 0.2s;
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+        }
+        .arti-icon-btn:hover { color: #C9A581; }
 
-                <div className=" absolute top-2 left-5 lg:top-8 md:left-10 lg:left-16 w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 border-t border-l border-[#C9A581]"></div>
+        .arti-signin-btn {
+          font-size: 11px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #C9A581;
+          text-decoration: none;
+          border: 1px solid rgba(201,165,129,0.3);
+          padding: 7px 16px;
+          border-radius: 2px;
+          font-family: 'Inter', sans-serif;
+          transition: border-color 0.2s;
+        }
+        .arti-signin-btn:hover { border-color: #C9A581; }
 
-                {/* Top Right */}
-                <div className=" absolute  top-1 right-4 md:right-8 lg:right-12 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 border-t border-r border-[#C9A581]"></div>
+        /* hide/show logic */
+        .arti-desktop { display: flex; }
+        .arti-hamburger { display: none !important; }
 
-                <div className=" absolute top-2 right-5 lg:top-8 md:right-10 lg:right-16 w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 border-t border-r border-[#C9A581]"></div>
+        @media (max-width: 768px) {
+          .arti-desktop  { display: none !important; }
+          .arti-hamburger { display: flex !important; }
+        }
 
+        /* drawer link hover */
+        .arti-drawer-link {
+          display: block;
+          padding: 15px 0;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 24px;
+          font-weight: 300;
+          color: #F5EDD8;
+          text-decoration: none;
+          letter-spacing: 0.04em;
+          border-bottom: 1px solid rgba(201,165,129,0.12);
+          transition: color 0.2s;
+        }
+        .arti-drawer-link:hover { color: #C9A581; }
+      `}</style>
 
+      {/* ── Navbar ───────────────────────────────────────────────────────── */}
+      <nav style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        background: C.bg,
+        borderBottom: `1px solid ${C.line}`,
+        height: 64,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 40px',
+      }}>
 
+        {/* LEFT — nav links (desktop) */}
+        <ul className="arti-desktop" style={{ gap: 32, listStyle: 'none', margin: 0, padding: 0, alignItems: 'center' }}>
+          {navLinks.map(({ label, to }) => (
+            <li key={label}>
+              <Link to={to} className="arti-nav-link">{label}</Link>
+            </li>
+          ))}
+        </ul>
 
-                <div className="absolute top-0 left-[4%] right-[4%] md:left-[8%] md:right-[8%] lg:left-[10%] lg:right-[10%] h-20 md:h-28 lg:h-32 backdrop-blur-md bg-[#102B2A]/60 rounded-b-sm z-[-1]" />
+        {/* CENTRE — logo (always visible, perfectly centred) */}
+        <Link to="/" style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: 26,
+          fontWeight: 600,
+          letterSpacing: '0.28em',
+          color: C.gold,
+          textDecoration: 'none',
+          userSelect: 'none',
+          whiteSpace: 'nowrap',
+        }}>
+          ARTI
+        </Link>
 
-                <div className="relative h-24 md:h-28 lg:h-32 z-10">
+        {/* RIGHT — icons + auth (desktop) / hamburger (mobile) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
 
+          {/* Desktop icons */}
+          <Link to="/search"   className="arti-icon-btn arti-desktop" title="Search"><SearchIcon /></Link>
+          <Link to="/wishlist" className="arti-icon-btn arti-desktop" title="Wishlist"><HeartIcon /></Link>
+          <Link to="/cart"     className="arti-icon-btn arti-desktop" title="Cart"><BagIcon /></Link>
 
-                    <div className="absolute left-[8%] md:left-[10%] lg:left-[10%] top-1/2 -translate-y-1/2">
-                        <img
-                            //   src={logo}
-                            alt="ARTi"
-                            className="h-16 mt-3 md:h-[90px] lg:h-[110px] w-auto object-contain"
-                        />
-                    </div>
+          {/* Desktop auth */}
+          <div className="arti-desktop" style={{ alignItems: 'center', gap: 16 }}>
+            {user ? (
+              <>
+                <Link to="/orders" className="arti-nav-link">Orders</Link>
+                <button onClick={handleLogout} className="arti-icon-btn" style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", color: C.creamLow }}>
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <Link to="/login" className="arti-signin-btn">Sign in</Link>
+            )}
+          </div>
 
-                    <button
-                        aria-label="Menu"
-                        onClick={() => setMenuOpen(!menuOpen)}
-                        onMouseEnter={() => setHovered(true)}
-                        onMouseLeave={() => setHovered(false)}
-                        className="absolute right-[8%] md:right-[10%] lg:right-[10%] top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center cursor-pointer z-[60]"
-                    >
-                        {menuOpen ? (
-                            <div
-                                className="w-12 h-12 flex flex-col items-center justify-center gap-1"
-                                onMouseEnter={() => setCrossHovered(true)}
-                                onMouseLeave={() => setCrossHovered(false)}
-                            >
-                                <svg
-                                    width="36"
-                                    height="36"
-                                    viewBox="0 0 40 40"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="cross-svg"
-                                >
-                                    <line x1="8" y1="8" x2="32" y2="32" stroke="#C9A581" strokeWidth="3.5" strokeLinecap="round" className="cross-line-1" />
-                                    <line x1="32" y1="8" x2="8" y2="32" stroke="#C9A581" strokeWidth="3.5" strokeLinecap="round" className="cross-line-2" />
-                                </svg>
-                                <span
-                                    className="block h-[1.5px] bg-[#C9A581] transition-all duration-500 ease-in-out"
-                                    style={{ width: crossHovered ? "36px" : "0px" }}
-                                />
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-end gap-2">
-                                <span className={`h-[1.5px] bg-[#C9A581] transition-all duration-300 ${hovered ? "w-8" : "w-12"}`} />
-                                <span className={`h-[1.5px] bg-[#C9A581] transition-all duration-300 ${hovered ? "w-12" : "w-8"}`} />
-                            </div>
-                        )}
-                    </button>
-                </div>
+          {/* Hamburger (mobile only) */}
+          <button
+            onClick={() => setOpen(true)}
+            className="arti-icon-btn arti-hamburger"
+            aria-label="Open menu"
+            style={{ color: C.creamMid }}
+          >
+            <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <line x1="3" y1="7"  x2="21" y2="7"  strokeLinecap="round"/>
+              <line x1="3" y1="12" x2="16" y2="12" strokeLinecap="round"/>
+              <line x1="3" y1="17" x2="21" y2="17" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </nav>
 
-                <div className="absolute top-20 md:top-28 lg:top-32 bg-black left-4 right-4 md:left-4 md:right-4 lg:left-20 lg:right-20 h-px bg-[#C9A581]/20"></div>
+      {/* ── Mobile overlay ───────────────────────────────────────────────── */}
+      <div
+        onClick={close}
+        style={{
+          position: 'fixed', inset: 0,
+          background: 'rgba(0,0,0,0.6)',
+          zIndex: 200,
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? 'auto' : 'none',
+          transition: 'opacity 0.3s',
+        }}
+      />
 
-                {/* Sliding Menu */}
-                {/* Sliding Menu */}
-                <div
-                    className={`fixed
-top-[6rem] md:top-[7rem] lg:top-[8rem]
- left-[2.5%] w-[95%]
-md:left-[5%] md:w-[90%]
-lg:left-[10%] lg:w-[80%]
-  h-[55vh]
-  z-[45]
-  border-2 border-[#C9A581]/20
-  bg-[#102B2A]/80 backdrop-blur-md
-  origin-top
-  transition-all
-  duration-700
-  ease-[cubic-bezier(0.22,1,0.36,1)]
-  ${menuOpen
-                            ? "scale-y-100 opacity-100"
-                            : "scale-y-0 opacity-0 pointer-events-none"
-                        }
-`}
-                >
-                    <div className="flex flex-col items-center justify-center h-full gap-2 md:gap-3 lg:gap-4">
+      {/* ── Mobile drawer ─────────────────────────────────────────────────── */}
+      <div style={{
+        position: 'fixed',
+        top: 0, right: 0,
+        width: 300,
+        height: '100dvh',
+        background: C.bgDrawer,
+        borderLeft: `1px solid ${C.line}`,
+        zIndex: 300,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '0 28px 32px',
+        transform: open ? 'translateX(0)' : 'translateX(100%)',
+        transition: 'transform 0.32s cubic-bezier(0.4,0,0.2,1)',
+      }}>
 
-                        {links.map((link, index) => (
-                            <Link
-                                key={index}
-                                to={link.path}
-                                onClick={() => setMenuOpen(false)}
-                                className="
-          relative
-          text-[#C9A581]
-          text-2xl
-          sm:text-1xl
-          md:text-1xl
-          lg:text-2xl
-          font-light
-          tracking-wide
-          transition-all
-          duration-300
-          hover:tracking-[8px]
-          hover:scale-105
-          group
-        "
-                            >
-                                {link.name}
+        {/* Drawer top bar */}
+        <div style={{
+          height: 64,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderBottom: `1px solid ${C.line}`,
+          marginBottom: 8,
+        }}>
+          <span style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 20,
+            fontWeight: 600,
+            letterSpacing: '0.25em',
+            color: C.gold,
+          }}>ARTI</span>
 
-                                <span
-                                    className="
-            absolute
-            left-0
-            -bottom-1
-            h-[1px]
-            w-0
-            bg-[#C9A581]
-            transition-all
-            duration-500
-            group-hover:w-full
-          "
-                                />
-                            </Link>
-                        ))}
+          {/* X button */}
+          <button
+            onClick={close}
+            aria-label="Close menu"
+            style={{
+              width: 36, height: 36,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'none',
+              border: `1px solid ${C.line}`,
+              borderRadius: 2,
+              cursor: 'pointer',
+              color: C.creamMid,
+              transition: 'border-color 0.2s, color 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = C.gold; e.currentTarget.style.color = C.gold; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.color = C.creamMid; }}
+          >
+            <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" strokeLinecap="round"/>
+              <line x1="6"  y1="6" x2="18" y2="18" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
 
-                    </div>
-                </div>
-            </div>
+        {/* Drawer links */}
+        <nav style={{ flex: 1, overflowY: 'auto', paddingTop: 8 }}>
+          {navLinks.map(({ label, to }) => (
+            <Link key={label} to={to} onClick={close} className="arti-drawer-link">
+              {label}
+            </Link>
+          ))}
+        </nav>
 
-            <div className="absolute top-1 md:top-4 left-1/2 -translate-x-1/2 w-[65%] sm:w-[65%] md:w-[70%] lg:w-[75%] h-px bg-[#C9A581]/20"></div>
-        </header>
-    );
+        {/* Drawer icons row */}
+        <div style={{
+          display: 'flex',
+          gap: 20,
+          padding: '20px 0',
+          borderTop: `1px solid ${C.line}`,
+          borderBottom: `1px solid ${C.line}`,
+          marginBottom: 20,
+        }}>
+          {[
+            { to: '/search',  title: 'Search',   icon: <SearchIcon /> },
+            { to: '/wishlist',title: 'Wishlist',  icon: <HeartIcon size={20} /> },
+            { to: '/cart',    title: 'Cart',      icon: <BagIcon size={20} /> },
+          ].map(({ to, title, icon }) => (
+            <Link key={to} to={to} onClick={close} className="arti-icon-btn" title={title}
+              style={{ color: C.creamMid, padding: '4px 0' }}>
+              {icon}
+            </Link>
+          ))}
+        </div>
+
+        {/* Drawer auth */}
+        {user ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <Link to="/orders" onClick={close} className="arti-nav-link" style={{ fontSize: 11 }}>
+              My orders
+            </Link>
+            <button onClick={handleLogout} className="arti-icon-btn" style={{
+              fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase',
+              fontFamily: "'Inter', sans-serif", color: C.creamLow, justifyContent: 'flex-start',
+            }}>
+              Sign out
+            </button>
+          </div>
+        ) : (
+          <Link to="/login" onClick={close} style={{
+            display: 'block', textAlign: 'center',
+            fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase',
+            fontFamily: "'Inter', sans-serif",
+            color: C.bg, background: C.gold,
+            padding: '13px 0', borderRadius: 2,
+            textDecoration: 'none',
+            transition: 'opacity 0.2s',
+          }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            Sign in
+          </Link>
+        )}
+      </div>
+    </>
+  );
 };
 
 export default Navbar;

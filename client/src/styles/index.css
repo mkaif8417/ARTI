@@ -1,47 +1,47 @@
+/* src/styles/index.css */
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
 
 :root {
-  --color-bg: #fbf6ee;
-  --color-ink: #2a2118;
-  --color-maroon: #6f1d2b;
-  --color-maroon-dark: #531420;
-  --color-gold: #c99a3c;
-  --color-rose: #f1ded8;
-  --color-line: rgba(42, 33, 24, 0.12);
+  --color-bg:          #102B2A;
+  --color-bg-card:     #152F2E;
+  --color-gold:        #C9A581;
+  --color-gold-muted:  rgba(201, 165, 129, 0.35);
+  --color-cream:       #F5EDD8;
+  --color-cream-mid:   rgba(245, 237, 216, 0.55);
+  --color-cream-low:   rgba(245, 237, 216, 0.3);
+  --color-line:        rgba(201, 165, 129, 0.15);
 
-  --font-display: 'Fraunces', serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'Inter', sans-serif;
 }
 
-@layer base {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  html, body, #root {
-    min-height: 100%;
-  }
-
-  body {
-    font-family: var(--font-body);
-    color: var(--color-ink);
-    background: var(--color-bg);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  button {
-    font-family: inherit;
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--color-maroon);
-    outline-offset: 2px;
-  }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-gold-muted); border-radius: 3px; }

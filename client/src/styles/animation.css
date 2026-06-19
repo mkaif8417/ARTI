@@ -1,4 +1,4 @@
-/* cross button stylist */
+cross button stylist */
 .cross-line-1,
 .cross-line-2 {
   stroke-dasharray: 34;
@@ -46,4 +46,4 @@
   0%   { transform: translate(0px, 0px); opacity: 1; }
   100% { transform: translate(6px, -6px); opacity: 0.5; }
 }
-/* cross button stylle end */
+/* cross button stylle end

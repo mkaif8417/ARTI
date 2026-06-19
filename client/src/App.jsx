@@ -1,5 +1,4 @@
-// src/App.jsx
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
 import Navbar from './components/Navbar';
@@ -8,13 +7,19 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminApp from './admin/AdminApp';
 
-// Add these as you build them out
+// Uncomment as you build:
 // import Products from './pages/Products';
 // import ProductDetail from './pages/ProductDetail';
 // import Cart from './pages/Cart';
-// import Checkout from './pages/Checkout';
 // import Orders from './pages/Orders';
 // import Profile from './pages/Profile';
+
+const PublicLayout = () => (
+  <>
+    <Navbar />
+    <Outlet />
+  </>
+);
 
 const ProtectedRoute = ({ children }) => {
   const { user, getToken } = useAuth();
@@ -26,33 +31,33 @@ function App() {
   const { user } = useAuth();
 
   return (
-    <>
-      <Routes>
-        {/* Public — with Navbar */}
-        <Route path="/" element={<><Navbar /><Home /></>} />
+    <Routes>
 
-        {/* Uncomment as you build pages:
-        <Route path="/products" element={<><Navbar /><Products /></>} />
-        <Route path="/products/:slug" element={<><Navbar /><ProductDetail /></>} />
-        */}
+      {/* ── Pages WITH Navbar ──────────────────────────────────── */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<Home />} />
 
-        {/* User-protected — with Navbar */}
-        {/* 
-        <Route path="/cart" element={<ProtectedRoute><Navbar /><Cart /></ProtectedRoute>} />
-        <Route path="/orders" element={<ProtectedRoute><Navbar /><Orders /></ProtectedRoute>} />
-        */}
+        {/* Uncomment as you build: */}
+        {/* <Route path="/products" element={<Products />} /> */}
+        {/* <Route path="/products/:slug" element={<ProductDetail />} /> */}
 
-        {/* Auth — no Navbar */}
-        <Route path="/login"    element={user ? <Navigate to="/" replace /> : <Login />} />
-        <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+        {/* Protected pages also get Navbar */}
+        {/* <Route path="/cart"    element={<ProtectedRoute><Cart /></ProtectedRoute>} /> */}
+        {/* <Route path="/orders"  element={<ProtectedRoute><Orders /></ProtectedRoute>} /> */}
+        {/* <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} /> */}
+      </Route>
 
-        {/* Admin — fully self-contained */}
-        <Route path="/admin/*" element={<AdminApp />} />
+      {/* ── Auth pages — NO Navbar ─────────────────────────────── */}
+      <Route path="/login"    element={user ? <Navigate to="/" replace /> : <Login />} />
+      <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
 
-        {/* 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </>
+      {/* ── Admin — fully self-contained ───────────────────────── */}
+      <Route path="/admin/*" element={<AdminApp />} />
+
+      {/* ── 404 ────────────────────────────────────────────────── */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+
+    </Routes>
   );
 }
 
