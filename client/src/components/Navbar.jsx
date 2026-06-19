@@ -90,8 +90,126 @@ const Navbar = () => {
           border-radius: 2px;
           font-family: 'Inter', sans-serif;
           transition: border-color 0.2s;
+          position: relative;
         }
         .arti-signin-btn:hover { border-color: #C9A581; }
+
+        /* second border that draws in from top-left and bottom-right on hover */
+        .arti-signin-btn::before,
+        .arti-signin-btn::after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          pointer-events: none;
+          transition: width 0.6s ease, height 0.6s ease;
+        }
+        .arti-signin-btn::before {
+          top: 4px;
+          left: 4px;
+          border-top: 1px solid #C9A581;
+          border-left: 1px solid #C9A581;
+        }
+        .arti-signin-btn::after {
+          bottom: 4px;
+          right: 4px;
+          border-bottom: 1px solid #C9A581;
+          border-right: 1px solid #C9A581;
+        }
+        .arti-signin-btn:hover::before,
+        .arti-signin-btn:hover::after {
+          width: calc(100% - 8px);
+          height: calc(100% - 8px);
+        }
+
+        /* filled gold button (drawer sign in / signup) — same corner-border effect */
+        .arti-fill-btn {
+          display: block;
+          text-align: center;
+          font-size: 11px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          font-family: 'Inter', sans-serif;
+          color: #102B2A;
+          background: #C9A581;
+          padding: 13px 0;
+          border-radius: 2px;
+          text-decoration: none;
+          position: relative;
+          transition: opacity 0.2s;
+        }
+        .arti-fill-btn:hover { opacity: 0.85; }
+
+        .arti-fill-btn::before,
+        .arti-fill-btn::after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          pointer-events: none;
+          transition: width 0.6s ease, height 0.6s ease;
+        }
+        .arti-fill-btn::before {
+          top: 4px;
+          left: 4px;
+          border-top: 1px solid #102B2A;
+          border-left: 1px solid #102B2A;
+        }
+        .arti-fill-btn::after {
+          bottom: 4px;
+          right: 4px;
+          border-bottom: 1px solid #102B2A;
+          border-right: 1px solid #102B2A;
+        }
+        .arti-fill-btn:hover::before,
+        .arti-fill-btn:hover::after {
+          width: calc(100% - 8px);
+          height: calc(100% - 8px);
+        }
+
+        /* sign out — bordered like sign-in, with corner draw-in on hover */
+        .arti-signout-btn {
+          position: relative;
+          background: none;
+          border: 1px solid rgba(201,165,129,0.3);
+          border-radius: 2px;
+          cursor: pointer;
+          padding: 7px 16px;
+          font-family: 'Inter', sans-serif;
+          font-size: 11px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: rgba(245,237,216,0.28);
+          transition: color 0.2s, border-color 0.2s;
+        }
+        .arti-signout-btn:hover { color: #C9A581; border-color: #C9A581; }
+
+        .arti-signout-btn::before,
+        .arti-signout-btn::after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          pointer-events: none;
+          transition: width 0.6s ease, height 0.6s ease;
+        }
+        .arti-signout-btn::before {
+          top: 4px;
+          left: 4px;
+          border-top: 1px solid #C9A581;
+          border-left: 1px solid #C9A581;
+        }
+        .arti-signout-btn::after {
+          bottom: 4px;
+          right: 4px;
+          border-bottom: 1px solid #C9A581;
+          border-right: 1px solid #C9A581;
+        }
+        .arti-signout-btn:hover::before,
+        .arti-signout-btn:hover::after {
+          width: calc(100% - 8px);
+          height: calc(100% - 8px);
+        }
 
         /* hide/show logic */
         .arti-desktop { display: flex; }
@@ -171,7 +289,7 @@ const Navbar = () => {
             {user ? (
               <>
                 <Link to="/orders" className="arti-nav-link">Orders</Link>
-                <button onClick={handleLogout} className="arti-icon-btn" style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif", color: C.creamLow }}>
+                <button onClick={handleLogout} className="arti-signout-btn">
                   Sign out
                 </button>
               </>
@@ -302,26 +420,12 @@ const Navbar = () => {
             <Link to="/orders" onClick={close} className="arti-nav-link" style={{ fontSize: 11 }}>
               My orders
             </Link>
-            <button onClick={handleLogout} className="arti-icon-btn" style={{
-              fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase',
-              fontFamily: "'Inter', sans-serif", color: C.creamLow, justifyContent: 'flex-start',
-            }}>
+            <button onClick={handleLogout} className="arti-signout-btn">
               Sign out
             </button>
           </div>
         ) : (
-          <Link to="/login" onClick={close} style={{
-            display: 'block', textAlign: 'center',
-            fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase',
-            fontFamily: "'Inter', sans-serif",
-            color: C.bg, background: C.gold,
-            padding: '13px 0', borderRadius: 2,
-            textDecoration: 'none',
-            transition: 'opacity 0.2s',
-          }}
-            onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
-            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-          >
+          <Link to="/login" onClick={close} className="arti-fill-btn">
             Sign in
           </Link>
         )}
