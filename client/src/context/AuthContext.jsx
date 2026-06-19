@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
 
@@ -9,19 +10,18 @@ export const AuthProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : null;
   });
 
-  // Calls POST /api/auth/login. Assumes the backend returns the user's
-  // fields (name, email, role, etc.) plus a `token` field in one object —
-  // confirm this matches your authController.login response shape.
   const login = async (email, password) => {
     const { data } = await axiosInstance.post('/auth/login', { email, password });
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data));
-    setUser(data);
-    return data;
+    
+    // Separate token from user fields cleanly
+    const { token, ...userData } = data;
+    
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData)); // no token inside user
+    setUser(userData);
+    return userData;
   };
 
-  // Calls POST /api/auth/register. Does not log the user in automatically —
-  // they're sent to the login page after registering.
   const register = async (name, email, password) => {
     const { data } = await axiosInstance.post('/auth/register', { name, email, password });
     return data;
@@ -33,8 +33,11 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Expose token getter so guards don't read localStorage directly
+  const getToken = () => localStorage.getItem('token');
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, getToken }}>
       {children}
     </AuthContext.Provider>
   );

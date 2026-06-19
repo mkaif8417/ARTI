@@ -1,19 +1,14 @@
+// src/admin/api.js
 const BASE_URL = 'http://localhost:5000/api';
 
-const getToken = () => localStorage.getItem('adminToken');
+// ← changed from 'adminToken' to 'token'
+const getToken = () => localStorage.getItem('token');
 
 const headers = () => ({
   Authorization: `Bearer ${getToken()}`,
 });
 
-export const adminLogin = async (email, password) => {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
-  return res.json();
-};
+// adminLogin REMOVED — use AuthContext login instead
 
 export const fetchProducts = async () => {
   const res = await fetch(`${BASE_URL}/products`, { headers: headers() });

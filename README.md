@@ -49,3 +49,22 @@ stock: 10
 category: <paste_category_id_here>
 image: (attach any image file)
 description:descption of product
+
+
+
+
+---------------------------
+Rotes:
+#user:
+http://localhost:5173/
+http://localhost:5173/login
+http://localhost:5173/register
+
+#admin
+http://localhost:5173/admin/login
+http://localhost:5173/admin/dashboard
+http://localhost:5173/admin/products
+http://localhost:5173/admin/products/add
+http://localhost:5173/admin/orders
+http://localhost:5173/admin/categories
+http://localhost:5173/admin/users

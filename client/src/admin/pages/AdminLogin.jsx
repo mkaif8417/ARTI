@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminLogin } from '../api';
+import { useAuth } from '../../context/AuthContext';   // ← changed
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -8,19 +8,18 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();                         // ← changed
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      const data = await adminLogin(email, password);
-      if (data.token && data.role === 'admin') {
-        localStorage.setItem('adminToken', data.token);
-        localStorage.setItem('adminRole', data.role);
+      const userData = await login(email, password);   // ← changed
+      if (userData.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
-        setError(data.message || 'Access denied. Admins only.');
+        setError('Access denied. Admins only.');
       }
     } catch {
       setError('Something went wrong. Try again.');
@@ -73,7 +72,7 @@ const AdminLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              className="w-full bg-transparent border-0 border-b border-[var(--color-line)] pb-2 text-sm text-[var(--color-ink)] placeholder-[var(--color-ink)]/30 focus:outline-none focus:border-[var(--color-gold)] transition-colors duration-300"
+              className="w-full bg-transparent border-b border-[var(--color-line)] pb-2 text-sm text-[var(--color-ink)] placeholder-[var(--color-ink)]/30 focus:outline-none focus:border-[var(--color-gold)] transition-colors duration-300"
             />
           </div>
           <button

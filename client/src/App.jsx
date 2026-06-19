@@ -1,37 +1,57 @@
+// src/App.jsx
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login.jsx';
-import Register from './pages/Register.jsx';
-import Home from './pages/Home.jsx';
-import AdminApp from './admin/AdminApp.jsx';
-import { useAuth } from './context/AuthContext.jsx';
-import Navbar from './components/Navbar.jsx';
+import { useAuth } from './context/AuthContext';
+
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import AdminApp from './admin/AdminApp';
+
+// Add these as you build them out
+// import Products from './pages/Products';
+// import ProductDetail from './pages/ProductDetail';
+// import Cart from './pages/Cart';
+// import Checkout from './pages/Checkout';
+// import Orders from './pages/Orders';
+// import Profile from './pages/Profile';
+
+const ProtectedRoute = ({ children }) => {
+  const { user, getToken } = useAuth();
+  if (!getToken() || !user) return <Navigate to="/login" replace />;
+  return children;
+};
 
 function App() {
   const { user } = useAuth();
 
   return (
     <>
-      <Navbar/>
-    <Routes>
-      {/* Public Home Page */}
-      <Route path="/" element={<Home />} />
+      <Routes>
+        {/* Public — with Navbar */}
+        <Route path="/" element={<><Navbar /><Home /></>} />
 
-      {/* Auth Pages */}
-      <Route
-        path="/login"
-        element={user ? <Navigate to="/" replace /> : <Login />}
-      />
+        {/* Uncomment as you build pages:
+        <Route path="/products" element={<><Navbar /><Products /></>} />
+        <Route path="/products/:slug" element={<><Navbar /><ProductDetail /></>} />
+        */}
 
-      <Route
-        path="/register"
-        element={user ? <Navigate to="/" replace /> : <Register />}
-      />
+        {/* User-protected — with Navbar */}
+        {/* 
+        <Route path="/cart" element={<ProtectedRoute><Navbar /><Cart /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><Navbar /><Orders /></ProtectedRoute>} />
+        */}
 
-      {/* Admin Routes */}
-      <Route path="/admin/*" element={<AdminApp />} />
+        {/* Auth — no Navbar */}
+        <Route path="/login"    element={user ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Admin — fully self-contained */}
+        <Route path="/admin/*" element={<AdminApp />} />
+
+        {/* 404 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 }
