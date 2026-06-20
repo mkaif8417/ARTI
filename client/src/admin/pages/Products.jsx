@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchProducts, deleteProduct } from '../api';
+import { fetchProducts, deleteProduct } from '../../api/adminApi';
 import { Plus, Trash2 } from 'lucide-react';
 
 const Products = () => {

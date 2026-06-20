@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchOrders, updateOrderStatus } from '../api';
-
+import { fetchOrders, updateOrderStatus } from '../../api/adminApi';
 const STATUS_OPTIONS = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
 const Orders = () => {

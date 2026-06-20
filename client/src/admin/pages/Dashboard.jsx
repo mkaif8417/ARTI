@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { fetchProducts, fetchOrders } from '../api';
 import { Package, ShoppingCart, IndianRupee, Clock } from 'lucide-react';
-
+import { fetchProducts, fetchOrders } from '../../api/adminApi';
 const StatCard = ({ icon: Icon, label, value, color }) => (
   <div className="bg-gray-800 rounded-xl p-6 flex items-center gap-4">
     <div className={`p-3 rounded-lg ${color}`}>

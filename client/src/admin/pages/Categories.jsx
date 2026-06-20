@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchCategories, createCategory } from '../api';
+import { fetchCategories, createCategory } from '../../api/adminApi';
 import { Plus } from 'lucide-react';
 
 const Categories = () => {

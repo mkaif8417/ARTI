@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createProduct, fetchCategories } from '../api';
+import { createProduct, fetchCategories } from '../../api/adminApi';
 import { ArrowLeft, Upload } from 'lucide-react';
 
 const AddProduct = () => {
