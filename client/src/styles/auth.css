@@ -172,6 +172,7 @@
   transition: opacity 0.2s;
 }
 
+
 .auth-submit:hover:not(:disabled) {
   opacity: 0.88;
 }
