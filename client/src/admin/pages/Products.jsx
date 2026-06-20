@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchProducts, deleteProduct } from '../../api/adminApi';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Pencil } from 'lucide-react';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -92,12 +92,22 @@ const Products = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <button
-                      onClick={() => handleDelete(p._id)}
-                      className="p-2 text-[var(--color-cream)]/50 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => navigate(`/admin/products/edit/${p._id}`)}
+                        className="p-2 text-[var(--color-cream)]/50 hover:text-[var(--color-gold)] hover:bg-[var(--color-gold)]/10 rounded-lg transition-colors"
+                        title="Edit product"
+                      >
+                        <Pencil size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(p._id)}
+                        className="p-2 text-[var(--color-cream)]/50 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                        title="Delete product"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -6,6 +6,7 @@ import AdminLogin from './pages/AdminLogin';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import AddProduct from './pages/AddProduct';
+import EditProduct from './pages/EditProduct';
 import Orders from './pages/Orders';
 import Categories from './pages/Categories';
 import Users from './pages/Users';
@@ -28,7 +29,7 @@ const AdminApp = () => (
       <Route path="dashboard"         element={<Dashboard />} />
       <Route path="products"          element={<Products />} />
       <Route path="products/add"      element={<AddProduct />} />
-      <Route path="products/edit/:id" element={<AddProduct />} />
+      <Route path="products/edit/:id" element={<EditProduct />} />
       <Route path="orders"            element={<Orders />} />
       <Route path="categories"        element={<Categories />} />
       <Route path="users"             element={<Users />} />

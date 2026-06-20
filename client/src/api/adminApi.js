@@ -37,3 +37,23 @@ export const createCategory = async (name) => {
   const res = await axiosInstance.post('/categories', { name });
   return res.data;
 };
+export const deleteCategory = async (id) => {
+  const res = await axiosInstance.delete(`/categories/${id}`);
+  return res.data;
+};
+export const updateCategory = async (id, name) => {
+  const res = await axiosInstance.put(`/categories/${id}`, { name });
+  return res.data;
+};
+export const updateProduct = async (id, formData) => {
+  const res = await axiosInstance.put(`/products/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return res.data;
+};
+
+export const fetchProductById = async (id) => {
+  const res = await axiosInstance.get(`/products/${id}`);
+  return res.data;
+};
+
