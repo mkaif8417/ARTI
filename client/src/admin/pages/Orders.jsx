@@ -22,28 +22,30 @@ const Orders = () => {
   };
 
   const statusColor = (s) => ({
-    delivered: 'bg-emerald-500/20 text-emerald-400',
-    shipped: 'bg-blue-500/20 text-blue-400',
-    cancelled: 'bg-red-500/20 text-red-400',
-    processing: 'bg-violet-500/20 text-violet-400',
-    pending: 'bg-amber-500/20 text-amber-400',
-  }[s] || 'bg-gray-500/20 text-gray-400');
+    delivered: 'bg-emerald-500/15 text-emerald-400',
+    shipped: 'bg-blue-500/15 text-blue-400',
+    cancelled: 'bg-red-500/15 text-red-400',
+    processing: 'bg-violet-500/15 text-violet-400',
+    pending: 'bg-[var(--color-gold)]/15 text-[var(--color-gold)]',
+  }[s] || 'bg-[var(--color-cream)]/10 text-[var(--color-cream)]/60');
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-white mb-6">Orders</h2>
+      <h2 className="text-2xl text-[var(--color-cream)] mb-6 [font-family:var(--font-display)]">
+        Orders
+      </h2>
 
       {loading ? (
-        <p className="text-gray-400 text-sm">Loading...</p>
+        <p className="text-[var(--color-cream)]/50 text-sm">Loading...</p>
       ) : orders.length === 0 ? (
-        <div className="bg-gray-800 rounded-xl p-12 text-center">
-          <p className="text-gray-400">No orders yet.</p>
+        <div className="bg-[var(--color-bg-card)] border border-[var(--color-line)] rounded-xl p-12 text-center">
+          <p className="text-[var(--color-cream)]/50">No orders yet.</p>
         </div>
       ) : (
-        <div className="bg-gray-800 rounded-xl overflow-hidden">
+        <div className="bg-[var(--color-bg-card)] border border-[var(--color-line)] rounded-xl overflow-hidden">
           <table className="w-full text-sm text-left">
-            <thead className="border-b border-gray-700">
-              <tr className="text-gray-400">
+            <thead className="border-b border-[var(--color-line)]">
+              <tr className="text-[var(--color-cream)]/50">
                 <th className="px-6 py-4">Order ID</th>
                 <th className="px-6 py-4">Customer</th>
                 <th className="px-6 py-4">Total</th>
@@ -54,12 +56,23 @@ const Orders = () => {
             </thead>
             <tbody>
               {orders.map((order) => (
-                <tr key={order._id} className="border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
-                  <td className="px-6 py-4 font-mono text-xs text-gray-400">{order._id.slice(-8)}</td>
-                  <td className="px-6 py-4 text-white">{order.user?.name || '—'}</td>
-                  <td className="px-6 py-4 text-white">₹{order.totalPrice}</td>
+                <tr
+                  key={order._id}
+                  className="border-b border-[var(--color-line)] hover:bg-[var(--color-gold)]/5 transition-colors"
+                >
+                  <td className="px-6 py-4 font-mono text-xs text-[var(--color-cream)]/50">
+                    {order._id.slice(-8)}
+                  </td>
+                  <td className="px-6 py-4 text-[var(--color-cream)]">{order.user?.name || '—'}</td>
+                  <td className="px-6 py-4 text-[var(--color-cream)]">₹{order.totalPrice}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${order.isPaid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        order.isPaid
+                          ? 'bg-emerald-500/15 text-emerald-400'
+                          : 'bg-red-500/15 text-red-400'
+                      }`}
+                    >
                       {order.isPaid ? 'Paid' : 'Unpaid'}
                     </span>
                   </td>
@@ -67,14 +80,18 @@ const Orders = () => {
                     <select
                       value={order.status}
                       onChange={(e) => handleStatus(order._id, e.target.value)}
-                      className={`text-xs font-medium px-2 py-1 rounded-lg border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 ${statusColor(order.status)} bg-transparent`}
+                      className={`text-xs font-medium px-2 py-1 rounded-lg border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/40 ${statusColor(order.status)} bg-transparent`}
                     >
                       {STATUS_OPTIONS.map((s) => (
-                        <option key={s} value={s} className="bg-gray-800 text-white">{s}</option>
+                        <option key={s} value={s} className="bg-[var(--color-bg-card)] text-[var(--color-cream)]">
+                          {s}
+                        </option>
                       ))}
                     </select>
                   </td>
-                  <td className="px-6 py-4 text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-[var(--color-cream)]/50">
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>

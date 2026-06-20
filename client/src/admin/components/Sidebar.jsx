@@ -12,17 +12,20 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const logout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminRole');
+    localStorage.removeItem('token'); // matches the key your AuthContext actually uses
     navigate('/admin/login');
   };
 
   return (
-    <aside className="w-64 min-h-screen bg-gray-900 text-white flex flex-col">
+    <aside className="w-64 min-h-screen bg-[var(--color-bg-card)] text-[var(--color-cream)] flex flex-col border-r border-[var(--color-line)]">
       {/* Logo */}
-      <div className="px-6 py-6 border-b border-gray-700">
-        <h1 className="text-xl font-bold tracking-wide text-white">ARTI Admin</h1>
-        <p className="text-xs text-gray-400 mt-1">Management Panel</p>
+      <div className="px-6 py-6 border-b border-[var(--color-line)]">
+        <h1 className="text-xl tracking-wide text-[var(--color-gold)] [font-family:var(--font-display)]">
+          ARTI Admin
+        </h1>
+        <p className="text-xs text-[var(--color-cream)]/40 mt-1 uppercase tracking-wider">
+          Management Panel
+        </p>
       </div>
 
       {/* Nav Links */}
@@ -34,8 +37,8 @@ const Sidebar = () => {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                  ? 'bg-[var(--color-gold)] text-[var(--color-bg)]'
+                  : 'text-[var(--color-cream)]/60 hover:bg-[var(--color-gold)]/10 hover:text-[var(--color-cream)]'
               }`
             }
           >
@@ -46,10 +49,10 @@ const Sidebar = () => {
       </nav>
 
       {/* Logout */}
-      <div className="px-4 py-6 border-t border-gray-700">
+      <div className="px-4 py-6 border-t border-[var(--color-line)]">
         <button
           onClick={logout}
-          className="flex items-center gap-3 px-4 py-2.5 w-full rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 w-full rounded-lg text-sm font-medium text-[var(--color-cream)]/60 hover:bg-red-500/10 hover:text-red-400 transition-colors"
         >
           <LogOut size={18} />
           Logout
