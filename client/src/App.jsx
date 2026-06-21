@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminApp from './admin/AdminApp';
+import { Divide } from 'lucide-react';
+import Divider from './components/Divider';
 
 // Uncomment as you build:
 // import Products from './pages/Products';
@@ -17,6 +19,7 @@ import AdminApp from './admin/AdminApp';
 const PublicLayout = () => (
   <>
     <Navbar />
+    {/* <Divider/> */}
     <Outlet />
   </>
 );

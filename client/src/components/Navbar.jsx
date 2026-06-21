@@ -43,6 +43,7 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  
 
   const handleLogout = () => {
     logout();

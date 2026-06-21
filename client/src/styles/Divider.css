@@ -1,0 +1,29 @@
+
+.hero-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 80px;
+}
+
+.hero-divider span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #c9a66b,
+    #e2c58b,
+    #c9a66b,
+    transparent
+  );
+}
+
+.divider-icon {
+  color: #c9a66b;
+  font-size: 32px;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(201, 166, 107, 0.3);
+}

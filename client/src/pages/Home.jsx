@@ -2,7 +2,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchProducts, fetchCategories, getImageUrl } from '../api/api';
+import HeroCarousel from '../components/HeroCarousel';
 import '../styles/home.css';
+import Divider from '../components/Divider';
 
 // Fallback colors cycled through when rendering cards (since DB products don't have a "bg" field)
 const FALLBACK_COLORS = ['#1B3D35', '#1E2E26', '#2E1E1A', '#1A2030', '#251828'];
@@ -31,8 +33,6 @@ const Home = () => {
     loadData();
   }, []);
 
-  // Hero: first 5 products
-  const heroItems = products.slice(0, 5);
   // Bestsellers: next 4 products (just an example split — adjust as you like)
   const bestsellers = products.slice(0, 4);
 
@@ -56,46 +56,9 @@ const Home = () => {
     <div style={{ background: '#102B2A', minHeight: '100vh', color: '#F5EDD8', fontFamily: "'Inter', sans-serif" }}>
 
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <section className="home-hero">
-        <div className="hero-head">
-          <div>
-            <p className="trust-text" style={{ marginBottom: 10 }}>New Arrivals</p>
-            <h1 className="hero-title">
-              Worn by hand,<br />
-              <em>woven with soul</em>
-            </h1>
-          </div>
-          <p className="hero-sub">
-            Premium handcrafted textiles<br />made by artisans across India
-          </p>
-        </div>
+      <HeroCarousel products={products} />
 
-        {heroItems.length === 0 ? (
-          <p className="trust-text">No products added yet. Add some from the admin panel!</p>
-        ) : (
-          <div className="hero-grid">
-            {heroItems.map((product, i) => {
-              const area = ['a', 'b', 'c', 'd', 'e'][i];
-              const imageUrl = getImageUrl(product.image);
-              return (
-                <Link
-                  to={`/products/${product._id}`}
-                  key={product._id}
-                  className={`hero-card area-${area}`}
-                  style={{
-                    background: imageUrl ? `url(${imageUrl}) center/cover no-repeat` : FALLBACK_COLORS[i % FALLBACK_COLORS.length],
-                  }}
-                >
-                  <div className="weave-overlay" />
-                  <p className="hero-card-tag">{product.category?.name || 'New'}</p>
-                  <p className="hero-card-name">{product.name}</p>
-                  <p className="hero-card-price">₹{product.price}</p>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </section>
+    <Divider/>
 
       {/* ── TRUST STRIP ───────────────────────────────────────────────────── */}
       <div className="trust-strip">
