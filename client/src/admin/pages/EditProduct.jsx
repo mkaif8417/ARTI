@@ -39,7 +39,7 @@ const [form, setForm] = useState({
   heroImage: null,
 });
         if (data.image) {
-          setPreview(`http://localhost:5000/${data.image}`);
+          setPreview(`${import.meta.env.VITE_API_URL}/${data.image}`);
         }
       } catch {
         setError('Failed to load product.');

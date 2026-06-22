@@ -72,7 +72,7 @@ const Products = () => {
                     <div className="flex items-center gap-3">
                       {p.image && (
                         <img
-                          src={`http://localhost:5000/${p.image}`}
+                          src={`${import.meta.env.VITE_API_URL}/${p.image}`}
                           alt={p.name}
                           className="w-10 h-10 rounded-lg object-cover bg-[var(--color-bg)]"
                         />
