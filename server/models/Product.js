@@ -28,6 +28,9 @@ const productSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    heroImage: {
+      type: String,
+    }, // optional hero banner image
   },
   {
     timestamps: true,

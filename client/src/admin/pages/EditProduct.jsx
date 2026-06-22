@@ -28,15 +28,16 @@ const EditProduct = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const data = await fetchProductById(id);
-        setForm({
-          name: data.name || '',
-          description: data.description || '',
-          price: data.price ?? '',
-          stock: data.stock ?? '',
-          category: data.category?._id || data.category || '',
-          image: null,
-        });
+
+const [form, setForm] = useState({
+  name: '',
+  description: '',
+  price: '',
+  stock: '',
+  category: '',
+  image: null,
+  heroImage: null,
+});
         if (data.image) {
           setPreview(`http://localhost:5000/${data.image}`);
         }

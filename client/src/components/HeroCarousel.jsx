@@ -97,14 +97,15 @@ const HeroCarousel = ({ products = [] }) => {
             style={{ transform: `translateX(-${heroIndex * 100}%)` }}
           >
             {heroItems.map((product, i) => {
-              const imageUrl = getImageUrl(product.image);
+             const imageUrl = getImageUrl(product.heroImage || product.image);
               return (
                 <div
                   className="hero-carousel-slide"
                   key={product._id}
                   style={{
-                    background: imageUrl ? `url(${imageUrl}) center/cover no-repeat` : FALLBACK_COLORS[i % FALLBACK_COLORS.length],
-                  }}
+  backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
+  backgroundColor: !imageUrl ? FALLBACK_COLORS[i % FALLBACK_COLORS.length] : undefined,
+}}
                 />
               );
             })}

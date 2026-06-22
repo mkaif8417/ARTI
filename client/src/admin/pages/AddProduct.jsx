@@ -12,11 +12,12 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [preview, setPreview] = useState(null);
+  const [heroPreview, setHeroPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [form, setForm] = useState({
-    name: '', description: '', price: '', stock: '', category: '', image: null,
+    name: '', description: '', price: '', stock: '', category: '', image: null, heroImage: null,
   });
 
   useEffect(() => {
@@ -28,6 +29,9 @@ const AddProduct = () => {
     if (name === 'image' && files[0]) {
       setForm((f) => ({ ...f, image: files[0] }));
       setPreview(URL.createObjectURL(files[0]));
+    } else if (name === 'heroImage' && files[0]) {
+      setForm((f) => ({ ...f, heroImage: files[0] }));
+      setHeroPreview(URL.createObjectURL(files[0]));
     } else {
       setForm((f) => ({ ...f, [name]: value }));
     }
@@ -46,6 +50,7 @@ const AddProduct = () => {
       formData.append('stock', form.stock);
       formData.append('category', form.category);
       if (form.image) formData.append('image', form.image);
+      if (form.heroImage) formData.append('heroImage', form.heroImage);
 
       const data = await createProduct(formData);
       if (data._id) {
@@ -99,6 +104,24 @@ const AddProduct = () => {
               </div>
             )}
             <input type="file" name="image" accept="image/*" onChange={handleChange} className="hidden" />
+          </label>
+        </div>
+
+        {/* Hero Banner Image Upload (optional) */}
+        <div>
+          <label className={labelClass}>
+            Hero Banner Image <span className="text-[var(--color-cream)]/40">(optional — wide image, e.g. 1600×600, used on homepage carousel)</span>
+          </label>
+          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[var(--color-line)] rounded-xl cursor-pointer hover:border-[var(--color-gold)] transition-colors overflow-hidden">
+            {heroPreview ? (
+              <img src={heroPreview} alt="hero preview" className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex flex-col items-center gap-2 text-[var(--color-cream)]/35">
+                <Upload size={24} />
+                <span className="text-sm">Click to upload hero banner (optional)</span>
+              </div>
+            )}
+            <input type="file" name="heroImage" accept="image/*" onChange={handleChange} className="hidden" />
           </label>
         </div>
 
