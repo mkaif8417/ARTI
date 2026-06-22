@@ -1,5 +1,12 @@
-const BASE_URL = 'http://localhost:5000/api';
-export const SERVER_URL = 'http://localhost:5000';
+// Development
+// const SERVER_URL = 'http://localhost:5000';
+
+// Production (Vercel + Render)
+const SERVER_URL = import.meta.env.VITE_API_URL;
+
+const BASE_URL = `${SERVER_URL}/api`;
+
+export { SERVER_URL };
 
 export const fetchProducts = async () => {
   const res = await fetch(`${BASE_URL}/products`);
