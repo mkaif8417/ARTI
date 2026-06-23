@@ -5,7 +5,7 @@
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
 const BASE_URL = `${SERVER_URL}/api`;
-
+console.log('SERVER_URL is:', SERVER_URL);
 export { SERVER_URL };
 
 export const fetchProducts = async () => {
