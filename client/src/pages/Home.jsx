@@ -5,8 +5,7 @@ import { fetchProducts, fetchCategories, getImageUrl } from '../api/api';
 import HeroCarousel from '../components/HeroCarousel';
 import '../styles/home.css';
 import Divider from '../components/Divider';
-import BentoHero from '../components/BentoHero';
-import CategoryHero from '../components/CategoryHero';
+
 
 // Fallback colors cycled through when rendering cards (since DB products don't have a "bg" field)
 const FALLBACK_COLORS = ['#1B3D35', '#1E2E26', '#2E1E1A', '#1A2030', '#251828'];
@@ -59,8 +58,6 @@ const Home = () => {
 
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <HeroCarousel products={products} />
-{/* <BentoHero products={products} /> */}
-{/* <CategoryHero products={products} /> */}
     <Divider/>
 
       {/* ── TRUST STRIP ───────────────────────────────────────────────────── */}
