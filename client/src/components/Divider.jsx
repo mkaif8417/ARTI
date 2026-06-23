@@ -4,7 +4,7 @@ const Divider = () => {
   return (
     <div className="hero-divider">
       <span></span>
-      <div className="divider-icon">⋅☆⋅ </div>
+      <div className="divider-icon">⋅☆⋅</div>
       <span></span>
     </div>
   );

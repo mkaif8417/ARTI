@@ -154,7 +154,6 @@ const HeroCarousel = ({ products = [] }) => {
               <Link to={`/products/${activeHeroProduct?._id}`} className="hero-carousel-name">
                 {activeHeroProduct?.name}
               </Link>
-              <p className="hero-carousel-price">₹{activeHeroProduct?.price}</p>
             </div>
 
             {heroItems.length > 1 && (
