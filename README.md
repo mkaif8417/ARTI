@@ -50,8 +50,8 @@ category: <paste_category_id_here>
 image: (attach any image file)
 description:descption of product
 
-
-
+<!-- /reference -->
+https://www.chinayabanaras.com/
 
 ---------------------------
 Rotes:
