@@ -1,26 +1,23 @@
+// src/admin/pages/ForgotPassword.jsx
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from "../../api/axiosInstance";
 
-const AdminLogin = () => {
+const ForgotPassword = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setMessage('');
     setLoading(true);
     try {
-      const userData = await login(email, password);
-      if (userData.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        setError('Access denied. Admins only.');
-      }
+      await axiosInstance.post('/auth/forgot-password', { email });
+      setMessage('If that email exists, a reset link has been sent.');
     } catch {
       setError('Something went wrong. Try again.');
     } finally {
@@ -35,13 +32,18 @@ const AdminLogin = () => {
           Management Panel
         </p>
         <h1 className="text-4xl text-[var(--color-gold)] mb-4 [font-family:var(--font-display)]">
-          ARTI Admin
+          Forgot Password
         </h1>
         <div className="w-10 h-px bg-[var(--color-gold)] mb-4"></div>
         <p className="text-sm text-[var(--color-cream)]/60 mb-8">
-          Sign in to manage your store
+          Enter your email and we'll send you a reset link
         </p>
 
+        {message && (
+          <div className="mb-5 px-4 py-3 rounded-lg text-sm bg-green-500/10 border border-green-500/20 text-green-400">
+            {message}
+          </div>
+        )}
         {error && (
           <div className="mb-5 px-4 py-3 rounded-lg text-sm bg-[var(--color-gold)]/5 border border-[var(--color-gold)]/20 text-[var(--color-gold)]">
             {error}
@@ -62,39 +64,25 @@ const AdminLogin = () => {
               className="w-full bg-transparent border-0 border-b border-[var(--color-line)] pb-2 text-sm text-[var(--color-cream)] placeholder-[var(--color-cream)]/30 focus:outline-none focus:border-[var(--color-gold)] transition-colors duration-300"
             />
           </div>
-          <div>
-            <label className="block text-[11px] uppercase tracking-wider text-[var(--color-cream)]/55 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-              className="w-full bg-transparent border-b border-[var(--color-line)] pb-2 text-sm text-[var(--color-cream)] placeholder-[var(--color-cream)]/30 focus:outline-none focus:border-[var(--color-gold)] transition-colors duration-300"
-            />
-          </div>
-          <div className="flex justify-end -mt-3">
-  <Link
-    to="/admin/forgot-password"
-    className="text-xs text-[var(--color-gold)] hover:underline transition-colors"
-  >
-    Forgot Password?
-  </Link>
-</div>
           <button
             type="submit"
             disabled={loading}
             className="w-full py-3 rounded-lg text-xs uppercase tracking-[0.15em] font-medium bg-[var(--color-gold)] text-[var(--color-bg)] hover:opacity-90 disabled:opacity-50 transition-opacity duration-300"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Sending...' : 'Send Reset Link'}
           </button>
-      
         </form>
+
+        <button
+          type="button"
+          onClick={() => navigate('/admin/login')}
+          className="mt-6 text-xs text-[var(--color-cream)]/50 hover:text-[var(--color-gold)] transition-colors"
+        >
+          ← Back to login
+        </button>
       </div>
     </div>
   );
 };
 
-export default AdminLogin;
+export default ForgotPassword;

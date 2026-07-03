@@ -10,6 +10,8 @@ import EditProduct from './pages/EditProduct';
 import Orders from './pages/Orders';
 import Categories from './pages/Categories';
 import Users from './pages/Users';
+import ForgotPassword from './pages/ForgotPassword';   // add this import
+import ResetPassword from './pages/ResetPassword';  
 
 const AdminLayout = () => (
   <div className="flex min-h-screen bg-gray-950">
@@ -23,7 +25,9 @@ const AdminLayout = () => (
 const AdminApp = () => (
   <Routes>
     <Route path="login" element={<AdminLogin />} />
-
+    <Route path="forgot-password" element={<ForgotPassword />} />
+    <Route path="reset-password/:token" element={<ResetPassword />} />
+    
     <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
       <Route index element={<Navigate to="dashboard" replace />} />
       <Route path="dashboard"         element={<Dashboard />} />
