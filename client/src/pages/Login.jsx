@@ -72,6 +72,9 @@ const Login = () => {
           <button className="auth-submit" type="submit" disabled={loading}>
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
+          <p className="auth-switch" style={{ textAlign: 'right', marginTop: '10px' }}>
+  <Link to="/forgot-password">Forgot password?</Link>
+</p>
 
           <p className="auth-switch">
             New here? <Link to="/register">Create an account</Link>

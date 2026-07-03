@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchProducts, fetchCategories, getImageUrl } from '../api/api';
-import HeroCarousel from '../components/HeroCarousel';
+import ProductGrid from '../components/ProductGrid';
 import '../styles/home.css';
 import Divider from '../components/Divider';
 
@@ -57,7 +57,7 @@ const Home = () => {
     <div style={{ background: '#102B2A', minHeight: '100vh', color: '#F5EDD8', fontFamily: "'Inter', sans-serif" }}>
 
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <HeroCarousel products={products} />
+      <ProductGrid products={products} limit={8} />
     <Divider/>
 
       {/* ── TRUST STRIP ───────────────────────────────────────────────────── */}

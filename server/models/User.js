@@ -33,6 +33,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    resetPasswordToken: {
+  type: String,
+},
+resetPasswordExpire: {
+  type: Date,
+},
 
     address: {
       type: String,
@@ -56,5 +62,6 @@ userSchema.pre("save", async function () {
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
 
 module.exports = mongoose.model("User", userSchema);

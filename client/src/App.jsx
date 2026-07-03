@@ -8,7 +8,8 @@ import Register from './pages/Register';
 import AdminApp from './admin/AdminApp';
 import { Divide } from 'lucide-react';
 import Divider from './components/Divider';
-
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 // Uncomment as you build:
 // import Products from './pages/Products';
 // import ProductDetail from './pages/ProductDetail';
@@ -51,11 +52,15 @@ function App() {
       </Route>
 
       {/* ── Auth pages — NO Navbar ─────────────────────────────── */}
-      <Route path="/login"    element={user ? <Navigate to="/" replace /> : <Login />} />
+      <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
       <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+      //reset and forget password routes
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
 
       {/* ── Admin — fully self-contained ───────────────────────── */}
       <Route path="/admin/*" element={<AdminApp />} />
+
 
       {/* ── 404 ────────────────────────────────────────────────── */}
       <Route path="*" element={<Navigate to="/" replace />} />
