@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 
 const C = {
   bg:        '#102B2A',
@@ -39,11 +41,40 @@ const BagIcon = ({ size = 17 }) => (
   </svg>
 );
 
+// Small gold count badge, absolutely positioned on top-right of an icon
+const CountBadge = ({ count }) => {
+  if (!count) return null;
+  return (
+    <span
+      style={{
+        position: 'absolute',
+        top: -7,
+        right: -9,
+        minWidth: 16,
+        height: 16,
+        padding: '0 4px',
+        borderRadius: 999,
+        background: C.gold,
+        color: C.bg,
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 10,
+        fontWeight: 700,
+        lineHeight: '16px',
+        textAlign: 'center',
+      }}
+    >
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+};
+
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  
+
 
   const handleLogout = () => {
     logout();
@@ -68,6 +99,7 @@ const Navbar = () => {
         .arti-nav-link:hover { color: #C9A581; }
 
         .arti-icon-btn {
+          position: relative;
           color: rgba(245,237,216,0.55);
           display: flex;
           align-items: center;
@@ -282,8 +314,14 @@ const Navbar = () => {
 
           {/* Desktop icons */}
           <Link to="/search"   className="arti-icon-btn arti-desktop" title="Search"><SearchIcon /></Link>
-          <Link to="/wishlist" className="arti-icon-btn arti-desktop" title="Wishlist"><HeartIcon /></Link>
-          <Link to="/cart"     className="arti-icon-btn arti-desktop" title="Cart"><BagIcon /></Link>
+          <Link to="/wishlist" className="arti-icon-btn arti-desktop" title="Wishlist">
+            <HeartIcon />
+            <CountBadge count={wishlistCount} />
+          </Link>
+          <Link to="/cart" className="arti-icon-btn arti-desktop" title="Cart">
+            <BagIcon />
+            <CountBadge count={cartCount} />
+          </Link>
 
           {/* Desktop auth */}
           <div className="arti-desktop" style={{ alignItems: 'center', gap: 16 }}>
@@ -311,6 +349,7 @@ const Navbar = () => {
               <line x1="3" y1="12" x2="16" y2="12" strokeLinecap="round"/>
               <line x1="3" y1="17" x2="21" y2="17" strokeLinecap="round"/>
             </svg>
+            <CountBadge count={cartCount} />
           </button>
         </div>
       </nav>
@@ -404,13 +443,14 @@ const Navbar = () => {
           marginBottom: 20,
         }}>
           {[
-            { to: '/search',  title: 'Search',   icon: <SearchIcon /> },
-            { to: '/wishlist',title: 'Wishlist',  icon: <HeartIcon size={20} /> },
-            { to: '/cart',    title: 'Cart',      icon: <BagIcon size={20} /> },
-          ].map(({ to, title, icon }) => (
+            { to: '/search',  title: 'Search',   icon: <SearchIcon />, count: 0 },
+            { to: '/wishlist',title: 'Wishlist',  icon: <HeartIcon size={20} />, count: wishlistCount },
+            { to: '/cart',    title: 'Cart',      icon: <BagIcon size={20} />, count: cartCount },
+          ].map(({ to, title, icon, count }) => (
             <Link key={to} to={to} onClick={close} className="arti-icon-btn" title={title}
               style={{ color: C.creamMid, padding: '4px 0' }}>
               {icon}
+              <CountBadge count={count} />
             </Link>
           ))}
         </div>
