@@ -68,3 +68,14 @@ http://localhost:5173/admin/products/add
 http://localhost:5173/admin/orders
 http://localhost:5173/admin/categories
 http://localhost:5173/admin/users
+
+
+
+links:
+cards--https://uiverse.io/byllzz/great-wombat-13
+
+3 cards--[text](https://uiverse.io/codebykay101/ugly-lion-23)
+notebook open--[text](https://uiverse.io/eslam-hany/selfish-bobcat-73)
+tubelight [text](https://uiverse.io/NK2552003/chatty-eel-90)
+Profile:[](https://uiverse.io/IWhat1/strange-panther-78)
+rotating earth:[text](https://uiverse.io/Lakshay-art/soft-dingo-98)
