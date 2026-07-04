@@ -68,3 +68,8 @@ http://localhost:5173/admin/products/add
 http://localhost:5173/admin/orders
 http://localhost:5173/admin/categories
 http://localhost:5173/admin/users
+
+
+
+<!--  -->
+https://auth0.com/docs/get-started/authentication-and-authorization-flow/which-oauth-2-0-flow-should-i-use
