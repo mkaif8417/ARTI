@@ -104,23 +104,24 @@ const ProductDetail = () => {
                 : 'none',
             }}
           >
-            <button
-              type="button"
-              className={`like-btn ${liked ? 'liked' : ''}`}
-              onClick={() => toggleLike(product)}
-              aria-label={liked ? 'Remove from wishlist' : 'Add to wishlist'}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                width="22"
-                height="22"
-                fill={liked ? 'currentColor' : 'none'}
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M12 21s-6.7-4.35-9.33-8.2C.6 9.94 1.7 6.3 5 5.15c2-.7 4 .05 5 1.85 1-1.8 3-2.55 5-1.85 3.3 1.15 4.4 4.79 2.33 7.65C18.7 16.65 12 21 12 21z" />
-              </svg>
-            </button>
+           <button
+  className={`like-btn ${liked ? 'liked' : ''}`}
+  onClick={() => toggleLike(product)}
+  aria-label={liked ? 'Remove from wishlist' : 'Add to wishlist'}
+>
+  <svg
+    viewBox="0 0 24 24"
+    width="19"
+    height="19"
+    fill={liked ? 'currentColor' : 'none'}
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 20.5c-.3 0-.6-.1-.8-.3C7.5 17.1 4.2 14 3.1 10.7c-.8-2.4.2-5.1 2.6-5.9 1.6-.5 3.3 0 4.4 1.3l1.9 2.2 1.9-2.2c1.1-1.3 2.8-1.8 4.4-1.3 2.4.8 3.4 3.5 2.6 5.9-1.1 3.3-4.4 6.4-8.1 9.5-.2.2-.5.3-.8.3z" />
+  </svg>
+</button>
           </div>
           {gallery.length > 1 && (
             <div className="product-detail-thumbnails">

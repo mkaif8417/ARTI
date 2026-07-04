@@ -9,6 +9,7 @@
 }
 
 .product-card {
+  position: relative; /* >>> CHANGED: needed so the like button anchors to the card */
   text-decoration: none;
   color: inherit;
   display: flex;
@@ -56,6 +57,41 @@
   margin: 0;
 }
 
+/* >>> CHANGED: added — wishlist heart button, floating top-right over image */
+.grid-like-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  color: #14140f;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.grid-like-btn:hover {
+  transform: scale(1.08);
+  background: #fff;
+}
+
+.grid-like-btn.liked {
+  color: #e0455f;
+  background: #fff;
+}
+
+.grid-like-btn svg {
+  display: block;
+}
+
 @media (max-width: 768px) {
   .product-grid-section {
     padding: 32px 16px;
@@ -91,5 +127,18 @@
 
   .product-card-price {
     font-size: 12px;
+  }
+
+  /* >>> CHANGED: added — smaller like button on small screens */
+  .grid-like-btn {
+    width: 28px;
+    height: 28px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .grid-like-btn svg {
+    width: 15px;
+    height: 15px;
   }
 }

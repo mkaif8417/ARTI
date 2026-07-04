@@ -73,7 +73,7 @@ const Home = () => {
       {/* ── CATEGORIES ────────────────────────────────────────────────────── */}
       <section className="home-section">
         <div className="section-head">
-          <h2 className="section-title">Shop by craft</h2>
+          <h2 className="section-title">Shop By Craft</h2>
           <Link to="/products" className="section-link">All categories</Link>
         </div>
         {categories.length === 0 ? (

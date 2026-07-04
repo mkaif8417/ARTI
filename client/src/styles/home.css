@@ -168,7 +168,7 @@
 /* ── Categories grid ─────────────────────────────────────────────────────── */
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 10px;
 }
 
@@ -197,6 +197,22 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: rgba(245, 237, 216, 0.3);
+}
+/* Mobile */
+@media (max-width: 480px) {
+  .category-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .category-card {
+    padding: 6px;
+    border-radius: 5px;
+  }
+
+  .category-name {
+    font-size: 10px;
+  }
 }
 
 /* ── Bestsellers grid ────────────────────────────────────────────────────── */
