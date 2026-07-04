@@ -1,18 +1,16 @@
-// src/components/Navbar.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import '../styles/Navbar.css';
 
 const C = {
   bg:        '#102B2A',
   bgDrawer:  '#0e2726',
   gold:      '#C9A581',
-  goldMuted: 'rgba(201,165,129,0.3)',
   cream:     '#F5EDD8',
   creamMid:  'rgba(245,237,216,0.55)',
-  creamLow:  'rgba(245,237,216,0.28)',
   line:      'rgba(201,165,129,0.15)',
 };
 
@@ -40,26 +38,34 @@ const BagIcon = ({ size = 17 }) => (
     <path d="M16 10a4 4 0 0 1-8 0"/>
   </svg>
 );
+/* Clean delivery-truck icon — reads clearly even at 17-18px */
+const DeliveryIcon = ({ size = 17 }) => (
+  <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+    <rect x="1" y="7" width="12" height="9" rx="1" />
+    <path d="M13 10h4l3 3v3h-7z" />
+    <circle cx="6" cy="18.5" r="1.6" fill="currentColor" stroke="none" />
+    <circle cx="17" cy="18.5" r="1.6" fill="currentColor" stroke="none" />
+  </svg>
+);
 
-// Small gold count badge, absolutely positioned on top-right of an icon
 const CountBadge = ({ count }) => {
   if (!count) return null;
   return (
     <span
       style={{
         position: 'absolute',
-        top: -7,
-        right: -9,
-        minWidth: 16,
-        height: 16,
+        top: -6,
+        right: -8,
+        minWidth: 15,
+        height: 15,
         padding: '0 4px',
         borderRadius: 999,
         background: C.gold,
         color: C.bg,
         fontFamily: "'Inter', sans-serif",
-        fontSize: 10,
+        fontSize: 9,
         fontWeight: 700,
-        lineHeight: '16px',
+        lineHeight: '15px',
         textAlign: 'center',
       }}
     >
@@ -75,7 +81,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -86,204 +91,23 @@ const Navbar = () => {
 
   return (
     <>
-      <style>{`
-        .arti-nav-link {
-          font-size: 11px;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          color: rgba(245,237,216,0.55);
-          text-decoration: none;
-          font-family: 'Inter', sans-serif;
-          transition: color 0.2s;
-        }
-        .arti-nav-link:hover { color: #C9A581; }
-
-        .arti-icon-btn {
-          position: relative;
-          color: rgba(245,237,216,0.55);
-          display: flex;
-          align-items: center;
-          text-decoration: none;
-          transition: color 0.2s;
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 0;
-        }
-        .arti-icon-btn:hover { color: #C9A581; }
-
-        .arti-signin-btn {
-          font-size: 11px;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          color: #C9A581;
-          text-decoration: none;
-          border: 1px solid rgba(201,165,129,0.3);
-          padding: 7px 16px;
-          border-radius: 2px;
-          font-family: 'Inter', sans-serif;
-          transition: border-color 0.2s;
-          position: relative;
-        }
-        .arti-signin-btn:hover { border-color: #C9A581; }
-
-        /* second border that draws in from top-left and bottom-right on hover */
-        .arti-signin-btn::before,
-        .arti-signin-btn::after {
-          content: '';
-          position: absolute;
-          width: 0;
-          height: 0;
-          pointer-events: none;
-          transition: width 0.6s ease, height 0.6s ease;
-        }
-        .arti-signin-btn::before {
-          top: 4px;
-          left: 4px;
-          border-top: 1px solid #C9A581;
-          border-left: 1px solid #C9A581;
-        }
-        .arti-signin-btn::after {
-          bottom: 4px;
-          right: 4px;
-          border-bottom: 1px solid #C9A581;
-          border-right: 1px solid #C9A581;
-        }
-        .arti-signin-btn:hover::before,
-        .arti-signin-btn:hover::after {
-          width: calc(100% - 8px);
-          height: calc(100% - 8px);
-        }
-
-        /* filled gold button (drawer sign in / signup) — same corner-border effect */
-        .arti-fill-btn {
-          display: block;
-          text-align: center;
-          font-size: 11px;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          font-family: 'Inter', sans-serif;
-          color: #102B2A;
-          background: #C9A581;
-          padding: 13px 0;
-          border-radius: 2px;
-          text-decoration: none;
-          position: relative;
-          transition: opacity 0.2s;
-        }
-        .arti-fill-btn:hover { opacity: 0.85; }
-
-        .arti-fill-btn::before,
-        .arti-fill-btn::after {
-          content: '';
-          position: absolute;
-          width: 0;
-          height: 0;
-          pointer-events: none;
-          transition: width 0.6s ease, height 0.6s ease;
-        }
-        .arti-fill-btn::before {
-          top: 4px;
-          left: 4px;
-          border-top: 1px solid #102B2A;
-          border-left: 1px solid #102B2A;
-        }
-        .arti-fill-btn::after {
-          bottom: 4px;
-          right: 4px;
-          border-bottom: 1px solid #102B2A;
-          border-right: 1px solid #102B2A;
-        }
-        .arti-fill-btn:hover::before,
-        .arti-fill-btn:hover::after {
-          width: calc(100% - 8px);
-          height: calc(100% - 8px);
-        }
-
-        /* sign out — bordered like sign-in, with corner draw-in on hover */
-        .arti-signout-btn {
-          position: relative;
-          background: none;
-          border: 1px solid rgba(201,165,129,0.3);
-          border-radius: 2px;
-          cursor: pointer;
-          padding: 7px 16px;
-          font-family: 'Inter', sans-serif;
-          font-size: 11px;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: rgba(245,237,216,0.28);
-          transition: color 0.2s, border-color 0.2s;
-        }
-        .arti-signout-btn:hover { color: #C9A581; border-color: #C9A581; }
-
-        .arti-signout-btn::before,
-        .arti-signout-btn::after {
-          content: '';
-          position: absolute;
-          width: 0;
-          height: 0;
-          pointer-events: none;
-          transition: width 0.6s ease, height 0.6s ease;
-        }
-        .arti-signout-btn::before {
-          top: 4px;
-          left: 4px;
-          border-top: 1px solid #C9A581;
-          border-left: 1px solid #C9A581;
-        }
-        .arti-signout-btn::after {
-          bottom: 4px;
-          right: 4px;
-          border-bottom: 1px solid #C9A581;
-          border-right: 1px solid #C9A581;
-        }
-        .arti-signout-btn:hover::before,
-        .arti-signout-btn:hover::after {
-          width: calc(100% - 8px);
-          height: calc(100% - 8px);
-        }
-
-        /* hide/show logic */
-        .arti-desktop { display: flex; }
-        .arti-hamburger { display: none !important; }
-
-        @media (max-width: 768px) {
-          .arti-desktop  { display: none !important; }
-          .arti-hamburger { display: flex !important; }
-        }
-
-        /* drawer link hover */
-        .arti-drawer-link {
-          display: block;
-          padding: 15px 0;
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 24px;
-          font-weight: 300;
-          color: #F5EDD8;
-          text-decoration: none;
-          letter-spacing: 0.04em;
-          border-bottom: 1px solid rgba(201,165,129,0.12);
-          transition: color 0.2s;
-        }
-        .arti-drawer-link:hover { color: #C9A581; }
-      `}</style>
-
       {/* ── Navbar ───────────────────────────────────────────────────────── */}
-      <nav style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        background: C.bg,
-        borderBottom: `1px solid ${C.line}`,
-        height: 64,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 40px',
-      }}>
-
-        {/* LEFT — nav links (desktop) */}
+      <nav
+        className="arti-navbar"
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+          background: C.bg,
+          borderBottom: `1px solid ${C.line}`,
+          height: 64,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 40px',
+        }}
+      >
+        {/* LEFT — nav links (desktop only) */}
         <ul className="arti-desktop" style={{ gap: 32, listStyle: 'none', margin: 0, padding: 0, alignItems: 'center' }}>
           {navLinks.map(({ label, to }) => (
             <li key={label}>
@@ -292,46 +116,37 @@ const Navbar = () => {
           ))}
         </ul>
 
-        {/* CENTRE — logo (always visible, perfectly centred) */}
-        <Link to="/" style={{
-          position: 'absolute',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 26,
-          fontWeight: 600,
-          letterSpacing: '0.28em',
-          color: C.gold,
-          textDecoration: 'none',
-          userSelect: 'none',
-          whiteSpace: 'nowrap',
-        }}>
+        {/* LOGO — centered on desktop, left-aligned on mobile (see CSS) */}
+        <Link to="/" className="arti-logo">
           ARTI
         </Link>
 
-        {/* RIGHT — icons + auth (desktop) / hamburger (mobile) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+        {/* RIGHT — icons (always visible) + auth (desktop) + hamburger (mobile) */}
+        <div className="arti-right-group" style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
 
-          {/* Desktop icons */}
-          <Link to="/search"   className="arti-icon-btn arti-desktop" title="Search"><SearchIcon /></Link>
-          <Link to="/wishlist" className="arti-icon-btn arti-desktop" title="Wishlist">
-            <HeartIcon />
-            <CountBadge count={wishlistCount} />
-          </Link>
-          <Link to="/cart" className="arti-icon-btn arti-desktop" title="Cart">
-            <BagIcon />
-            <CountBadge count={cartCount} />
-          </Link>
+          <div className="arti-icons-row">
+            <Link to="/search" className="arti-icon-btn" title="Search">
+              <SearchIcon />
+            </Link>
+            <Link to="/wishlist" className="arti-icon-btn" title="Wishlist">
+              <HeartIcon />
+              <CountBadge count={wishlistCount} />
+            </Link>
+            <Link to="/cart" className="arti-icon-btn" title="Cart">
+              <BagIcon />
+              <CountBadge count={cartCount} />
+            </Link>
+           <Link to="/orders" className="arti-icon-btn arti-orders-btn" title="My Orders">
+  <DeliveryIcon />
+</Link>
+          </div>
 
           {/* Desktop auth */}
           <div className="arti-desktop" style={{ alignItems: 'center', gap: 16 }}>
             {user ? (
-              <>
-                <Link to="/orders" className="arti-nav-link">Orders</Link>
-                <button onClick={handleLogout} className="arti-signout-btn">
-                  Sign out
-                </button>
-              </>
+              <button onClick={handleLogout} className="arti-signout-btn">
+                Sign out
+              </button>
             ) : (
               <Link to="/login" className="arti-signin-btn">Sign in</Link>
             )}
@@ -344,12 +159,11 @@ const Navbar = () => {
             aria-label="Open menu"
             style={{ color: C.creamMid }}
           >
-            <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <svg width="21" height="21" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <line x1="3" y1="7"  x2="21" y2="7"  strokeLinecap="round"/>
               <line x1="3" y1="12" x2="16" y2="12" strokeLinecap="round"/>
               <line x1="3" y1="17" x2="21" y2="17" strokeLinecap="round"/>
             </svg>
-            <CountBadge count={cartCount} />
           </button>
         </div>
       </nav>
@@ -383,7 +197,6 @@ const Navbar = () => {
         transition: 'transform 0.32s cubic-bezier(0.4,0,0.2,1)',
       }}>
 
-        {/* Drawer top bar */}
         <div style={{
           height: 64,
           display: 'flex',
@@ -400,7 +213,6 @@ const Navbar = () => {
             color: C.gold,
           }}>ARTI</span>
 
-          {/* X button */}
           <button
             onClick={close}
             aria-label="Close menu"
@@ -424,7 +236,6 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Drawer links */}
         <nav style={{ flex: 1, overflowY: 'auto', paddingTop: 8 }}>
           {navLinks.map(({ label, to }) => (
             <Link key={label} to={to} onClick={close} className="arti-drawer-link">
@@ -433,34 +244,8 @@ const Navbar = () => {
           ))}
         </nav>
 
-        {/* Drawer icons row */}
-        <div style={{
-          display: 'flex',
-          gap: 20,
-          padding: '20px 0',
-          borderTop: `1px solid ${C.line}`,
-          borderBottom: `1px solid ${C.line}`,
-          marginBottom: 20,
-        }}>
-          {[
-            { to: '/search',  title: 'Search',   icon: <SearchIcon />, count: 0 },
-            { to: '/wishlist',title: 'Wishlist',  icon: <HeartIcon size={20} />, count: wishlistCount },
-            { to: '/cart',    title: 'Cart',      icon: <BagIcon size={20} />, count: cartCount },
-          ].map(({ to, title, icon, count }) => (
-            <Link key={to} to={to} onClick={close} className="arti-icon-btn" title={title}
-              style={{ color: C.creamMid, padding: '4px 0' }}>
-              {icon}
-              <CountBadge count={count} />
-            </Link>
-          ))}
-        </div>
-
-        {/* Drawer auth */}
         {user ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <Link to="/orders" onClick={close} className="arti-nav-link" style={{ fontSize: 11 }}>
-              My orders
-            </Link>
             <button onClick={handleLogout} className="arti-signout-btn">
               Sign out
             </button>

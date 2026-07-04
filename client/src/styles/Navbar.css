@@ -1,0 +1,418 @@
+.arti-nav-link {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(245, 237, 216, 0.55);
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  transition: color 0.2s;
+}
+.arti-nav-link:hover {
+  color: #c9a581;
+}
+
+.arti-icon-btn {
+  position: relative;
+  color: rgba(245, 237, 216, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+.arti-icon-btn:hover {
+  color: #c9a581;
+}
+
+.arti-signin-btn {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c9a581;
+  text-decoration: none;
+  border: 1px solid rgba(201, 165, 129, 0.3);
+  padding: 7px 16px;
+  border-radius: 2px;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s;
+  position: relative;
+}
+.arti-signin-btn:hover {
+  border-color: #c9a581;
+}
+.arti-signin-btn::before,
+.arti-signin-btn::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  transition: width 0.6s ease, height 0.6s ease;
+}
+.arti-signin-btn::before {
+  top: 4px;
+  left: 4px;
+  border-top: 1px solid #c9a581;
+  border-left: 1px solid #c9a581;
+}
+.arti-signin-btn::after {
+  bottom: 4px;
+  right: 4px;
+  border-bottom: 1px solid #c9a581;
+  border-right: 1px solid #c9a581;
+}
+.arti-signin-btn:hover::before,
+.arti-signin-btn:hover::after {
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+}
+
+.arti-fill-btn {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  color: #102b2a;
+  background: #c9a581;
+  padding: 13px 0;
+  border-radius: 2px;
+  text-decoration: none;
+  position: relative;
+  transition: opacity 0.2s;
+}
+.arti-fill-btn:hover {
+  opacity: 0.85;
+}
+.arti-fill-btn::before,
+.arti-fill-btn::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  transition: width 0.6s ease, height 0.6s ease;
+}
+.arti-fill-btn::before {
+  top: 4px;
+  left: 4px;
+  border-top: 1px solid #102b2a;
+  border-left: 1px solid #102b2a;
+}
+.arti-fill-btn::after {
+  bottom: 4px;
+  right: 4px;
+  border-bottom: 1px solid #102b2a;
+  border-right: 1px solid #102b2a;
+}
+.arti-fill-btn:hover::before,
+.arti-fill-btn:hover::after {
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+}
+
+.arti-signout-btn {
+  position: relative;
+  background: none;
+  border: 1px solid rgba(201, 165, 129, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 7px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245, 237, 216, 0.28);
+  transition: color 0.2s, border-color 0.2s;
+}
+.arti-signout-btn:hover {
+  color: #c9a581;
+  border-color: #c9a581;
+}
+.arti-signout-btn::before,
+.arti-signout-btn::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  transition: width 0.6s ease, height 0.6s ease;
+}
+.arti-signout-btn::before {
+  top: 4px;
+  left: 4px;
+  border-top: 1px solid #c9a581;
+  border-left: 1px solid #c9a581;
+}
+.arti-signout-btn::after {
+  bottom: 4px;
+  right: 4px;
+  border-bottom: 1px solid #c9a581;
+  border-right: 1px solid #c9a581;
+}
+.arti-signout-btn:hover::before,
+.arti-signout-btn:hover::after {
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+}
+
+/* ── Layout: nav links + auth block → desktop only ──────────────────── */
+.arti-desktop {
+  display: flex;
+}
+.arti-hamburger {
+  display: none !important;
+}
+
+/* ── Logo: centered on desktop by default ───────────────────────────── */
+.arti-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: #c9a581;
+  text-decoration: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* ── Icons row ────────────────────────────────────────────────────── */
+.arti-icons-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+/* base icon size — desktop */
+.arti-icon-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+.arti-hamburger svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* >>> CHANGED: Orders icon — bigger than the rest, desktop */
+.arti-orders-btn svg {
+  width: 23px;
+  height: 23px;
+  position: relative;
+  z-index: 2;
+}
+
+/* >>> CHANGED: tighter gap so road touches the tires */
+.arti-orders-btn {
+  padding-bottom: 3px !important;
+  overflow: visible;
+}
+
+/* >>> CHANGED: road under the truck, touching tires, wider dashes */
+.arti-orders-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 2.5px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #c9a581 0px,
+    #c9a581 6px,
+    transparent 6px,
+    transparent 11px
+  );
+  background-size: 22px 2.5px;
+  animation: arti-road-move 0.6s linear infinite;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* >>> CHANGED: speed/motion streaks behind the truck ("air crossing") */
+.arti-orders-btn::before {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: -9px;
+  width: 7px;
+  height: 1.5px;
+  background: #c9a581;
+  opacity: 0;
+  box-shadow: 0 5px 0 #c9a581, 0 -5px 0 #c9a581;
+  animation: arti-speed-lines 0.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* >>> CHANGED: keyframes for scrolling road dashes */
+@keyframes arti-road-move {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -22px 0;
+  }
+}
+
+/* >>> CHANGED: keyframes for fading/sliding speed streaks */
+@keyframes arti-speed-lines {
+  0% {
+    opacity: 0;
+    transform: translateX(4px);
+  }
+  40% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+
+@media (max-width: 768px) {
+  .arti-desktop {
+    display: none !important;
+  }
+  .arti-hamburger {
+    display: flex !important;
+  }
+
+  nav.arti-navbar {
+    padding: 0 14px !important;
+    justify-content: space-between !important;
+  }
+
+  .arti-right-group {
+    order: 2;
+  }
+  .arti-logo {
+    order: 1;
+    position: static;
+    transform: none;
+    font-size: 20px;
+    letter-spacing: 0.16em;
+    margin-right: 0;
+  }
+
+  .arti-icons-row {
+    gap: 15px;
+  }
+
+  .arti-icon-btn svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .arti-hamburger svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+
+  /* >>> CHANGED: Orders icon — bigger than the rest, mobile */
+  .arti-orders-btn svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  /* >>> CHANGED: wider road on mobile to match bigger icon */
+  .arti-orders-btn::after {
+    width: 34px;
+  }
+
+  .arti-hamburger {
+    margin-left: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .arti-icons-row {
+    gap: 11px;
+  }
+
+  .arti-icon-btn svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .arti-hamburger svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* >>> CHANGED: Orders icon — bigger than the rest, small phones */
+  .arti-orders-btn svg {
+    width: 23px;
+    height: 23px;
+  }
+
+  /* >>> CHANGED: road width for small phones */
+  .arti-orders-btn::after {
+    width: 30px;
+  }
+
+  .arti-logo {
+    font-size: 16px;
+    letter-spacing: 0.1em;
+  }
+}
+
+.arti-drawer-link {
+  display: block;
+  padding: 15px 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: #f5edd8;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(201, 165, 129, 0.12);
+  transition: color 0.2s;
+}
+.arti-drawer-link:hover {
+  color: #c9a581;
+}
+
+
+/* >>> CHANGED: small pebble/dot that travels along the road */
+.arti-road-pebble {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #c9a581;
+  opacity: 0;
+  animation: arti-pebble-move 0.6s linear infinite;
+  pointer-events: none;
+}
+
+/* >>> CHANGED: pebble slides along the road width and fades at the ends */
+@keyframes arti-pebble-move {
+  0% {
+    transform: translateX(-15px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(15px);
+    opacity: 0;
+  }
+}
