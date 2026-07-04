@@ -14,6 +14,7 @@ import ResetPassword from './pages/ResetPassword';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
+import Checkout from './pages/Checkout';
 // Uncomment as you build:
 // import Products from './pages/Products';
 // import Orders from './pages/Orders';
@@ -50,6 +51,14 @@ function App() {
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Protected pages also get Navbar */}
             {/* <Route path="/orders"  element={<ProtectedRoute><Orders /></ProtectedRoute>} /> */}

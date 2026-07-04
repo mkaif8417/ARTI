@@ -1,5 +1,5 @@
 // src/pages/Cart.jsx
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { getImageUrl } from '../api/api';
 
@@ -16,6 +16,7 @@ const C = {
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
+  const navigate = useNavigate();
 
   if (items.length === 0) {
     return (
@@ -244,6 +245,7 @@ const Cart = () => {
           </button>
           <button
             type="button"
+            onClick={() => navigate('/checkout')}
             style={{
               background: C.gold,
               border: 'none',
