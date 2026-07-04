@@ -1,19 +1,22 @@
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminApp from './admin/AdminApp';
-import { Divide } from 'lucide-react';
 import Divider from './components/Divider';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import ProductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
+import Wishlist from './pages/Wishlist';
+import Checkout from './pages/Checkout';
 // Uncomment as you build:
 // import Products from './pages/Products';
-// import ProductDetail from './pages/ProductDetail';
-// import Cart from './pages/Cart';
 // import Orders from './pages/Orders';
 // import Profile from './pages/Profile';
 
@@ -35,37 +38,49 @@ function App() {
   const { user } = useAuth();
 
   return (
-    <Routes>
+    <CartProvider>
+      <WishlistProvider>
+        <Routes>
 
-      {/* ── Pages WITH Navbar ──────────────────────────────────── */}
-      <Route element={<PublicLayout />}>
-        <Route path="/" element={<Home />} />
+          {/* ── Pages WITH Navbar ──────────────────────────────────── */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<Home />} />
 
-        {/* Uncomment as you build: */}
-        {/* <Route path="/products" element={<Products />} /> */}
-        {/* <Route path="/products/:slug" element={<ProductDetail />} /> */}
+            {/* Uncomment as you build: */}
+            {/* <Route path="/products" element={<Products />} /> */}
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
 
-        {/* Protected pages also get Navbar */}
-        {/* <Route path="/cart"    element={<ProtectedRoute><Cart /></ProtectedRoute>} /> */}
-        {/* <Route path="/orders"  element={<ProtectedRoute><Orders /></ProtectedRoute>} /> */}
-        {/* <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} /> */}
-      </Route>
+            {/* Protected pages also get Navbar */}
+            {/* <Route path="/orders"  element={<ProtectedRoute><Orders /></ProtectedRoute>} /> */}
+            {/* <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} /> */}
+          </Route>
 
-      {/* ── Auth pages — NO Navbar ─────────────────────────────── */}
-      <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
-      <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
-      //reset and forget password routes
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
+          {/* ── Auth pages — NO Navbar ─────────────────────────────── */}
+          <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+          <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+          {/* reset and forget password routes */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-      {/* ── Admin — fully self-contained ───────────────────────── */}
-      <Route path="/admin/*" element={<AdminApp />} />
+          {/* ── Admin — fully self-contained ───────────────────────── */}
+          <Route path="/admin/*" element={<AdminApp />} />
 
+          {/* ── 404 ────────────────────────────────────────────────── */}
+          <Route path="*" element={<Navigate to="/" replace />} />
 
-      {/* ── 404 ────────────────────────────────────────────────── */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-
-    </Routes>
+        </Routes>
+      </WishlistProvider>
+    </CartProvider>
   );
 }
 
