@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import '../styles/SearchPage.css';
@@ -11,12 +11,15 @@ const C = {
   line:     'rgba(201,165,129,0.15)',
 };
 
+// Edit this list to match your actual popular categories/products
+const TRENDING_SEARCHES = ['Kurti', 'Saare', 'Textile', 'Jewelry', 'Home Decor', 'Scarf'];
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const debounceRef = useRef(null);
 
   // Run search automatically if URL already has ?q=... (e.g. shared link)
   useEffect(() => {
@@ -25,12 +28,30 @@ const SearchPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Debounced live search as the user types
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (!query.trim()) {
+      setResults([]);
+      setSearched(false);
+      return;
+    }
+
+    debounceRef.current = setTimeout(() => {
+      runSearch(query);
+    }, 400);
+
+    return () => clearTimeout(debounceRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
   const runSearch = async (q) => {
     if (!q.trim()) return;
     setLoading(true);
     setSearched(true);
     try {
-     const { data } = await axiosInstance.get(`/products/search?q=${encodeURIComponent(q)}`);
+      const { data } = await axiosInstance.get(`/products/search?q=${encodeURIComponent(q)}`);
       setResults(data);
     } catch (err) {
       console.error(err);
@@ -45,6 +66,14 @@ const SearchPage = () => {
     setSearchParams({ q: query });
     runSearch(query);
   };
+
+  const handleTrendingClick = (term) => {
+    setQuery(term);
+    setSearchParams({ q: term });
+    runSearch(term);
+  };
+
+  const showEmptyState = !query.trim() && !searched;
 
   return (
     <div className="search-page" style={{ background: C.bg }}>
@@ -67,16 +96,38 @@ const SearchPage = () => {
         </button>
       </form>
 
-      {/* States */}
+      {/* Empty state — trending searches before any typing */}
+      {showEmptyState && (
+        <div className="trending-wrap">
+          <p className="trending-label" style={{ color: C.creamMid }}>
+            Popular searches
+          </p>
+          <div className="trending-chips">
+            {TRENDING_SEARCHES.map((term) => (
+              <button
+                key={term}
+                onClick={() => handleTrendingClick(term)}
+                className="trending-chip"
+                style={{ borderColor: C.line, color: C.cream }}
+              >
+                {term}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Loading state */}
       {loading && (
         <p className="search-status-text" style={{ color: C.creamMid }}>
           Searching...
         </p>
       )}
 
+      {/* No results state */}
       {!loading && searched && results.length === 0 && (
         <p className="search-status-text" style={{ color: C.creamMid }}>
-          No results for "{searchParams.get('q')}"
+          No results for "{query}"
         </p>
       )}
 

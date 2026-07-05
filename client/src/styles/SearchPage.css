@@ -127,3 +127,48 @@
     font-size: 11px;
   }
 }
+/* Trending searches — empty state */
+.trending-wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.trending-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+
+.trending-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.trending-chip {
+  background: transparent;
+  border: 1px solid;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.trending-chip:hover {
+  background: rgba(201, 165, 129, 0.1);
+  border-color: #C9A581;
+}
+
+/* Mobile adjustments for trending chips */
+@media (max-width: 480px) {
+  .trending-chip {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+}
