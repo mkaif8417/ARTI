@@ -7,6 +7,7 @@ const upload = require('../config/multer');
 const {
   getProducts,
   getProductById,
+  searchProducts,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -14,6 +15,7 @@ const {
 
 // Public Routes
 router.get('/', getProducts);
+router.get('/search', searchProducts);
 router.get('/:id', getProductById);
 
 // Admin Routes

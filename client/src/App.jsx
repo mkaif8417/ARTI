@@ -15,6 +15,7 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
+import SearchPage from './pages/SearchPage';   // 👈 add this
 // Uncomment as you build:
 // import Products from './pages/Products';
 // import Orders from './pages/Orders';
@@ -45,6 +46,8 @@ function App() {
           {/* ── Pages WITH Navbar ──────────────────────────────────── */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
+
+            <Route path="/search" element={<SearchPage />} />   {/* 👈 add this */}
 
             {/* Uncomment as you build: */}
             {/* <Route path="/products" element={<Products />} /> */}
