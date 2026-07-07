@@ -1,18 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchProductById, updateProduct, fetchCategories } from '../../api/adminApi';
-import { ArrowLeft, Upload } from 'lucide-react';
+import { ArrowLeft, Upload, X } from 'lucide-react';
 
 const inputClass =
   'w-full px-4 py-2.5 bg-transparent border border-[var(--color-line)] rounded-lg text-[var(--color-cream)] placeholder-[var(--color-cream)]/30 focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/40 focus:border-[var(--color-gold)] text-sm transition-colors';
 
 const labelClass = 'block text-sm font-medium text-[var(--color-cream)]/70 mb-1.5';
 
+const MAX_EXTRA_IMAGES = 5;
+
 const EditProduct = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [categories, setCategories] = useState([]);
   const [preview, setPreview] = useState(null);
+
+  // Existing extra images already saved on the product (as URL strings from server)
+  const [existingImages, setExistingImages] = useState([]);
+  // New extra images picked in this session (File objects + previews)
+  const [newExtraFiles, setNewExtraFiles] = useState([]);
+  const [newExtraPreviews, setNewExtraPreviews] = useState([]); // [{id, url}]
+
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState('');
@@ -28,18 +37,23 @@ const EditProduct = () => {
   useEffect(() => {
     const load = async () => {
       try {
+        const data = await fetchProductById(id);
 
-const [form, setForm] = useState({
-  name: '',
-  description: '',
-  price: '',
-  stock: '',
-  category: '',
-  image: null,
-  heroImage: null,
-});
+        setForm({
+          name: data.name || '',
+          description: data.description || '',
+          price: data.price ?? '',
+          stock: data.stock ?? '',
+          category: data.category?._id || data.category || '',
+          image: null, // File input stays empty; existing image shown via preview
+        });
+
         if (data.image) {
           setPreview(`${import.meta.env.VITE_API_URL}/${data.image}`);
+        }
+
+        if (Array.isArray(data.images)) {
+          setExistingImages(data.images);
         }
       } catch {
         setError('Failed to load product.');
@@ -60,6 +74,36 @@ const [form, setForm] = useState({
     }
   };
 
+  const totalExtraCount = existingImages.length + newExtraFiles.length;
+
+  const handleNewExtraImagesChange = (e) => {
+    const selected = Array.from(e.target.files || []);
+    if (!selected.length) return;
+
+    const room = MAX_EXTRA_IMAGES - totalExtraCount;
+    const toAdd = selected.slice(0, Math.max(room, 0));
+
+    setNewExtraFiles((prev) => [...prev, ...toAdd]);
+    setNewExtraPreviews((prev) => [
+      ...prev,
+      ...toAdd.map((file) => ({
+        id: `${file.name}-${file.size}-${Date.now()}-${Math.random()}`,
+        url: URL.createObjectURL(file),
+      })),
+    ]);
+
+    e.target.value = '';
+  };
+
+  const removeExistingImage = (index) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeNewExtraImage = (index) => {
+    setNewExtraFiles((prev) => prev.filter((_, i) => i !== index));
+    setNewExtraPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -73,6 +117,12 @@ const [form, setForm] = useState({
       formData.append('stock', form.stock);
       formData.append('category', form.category);
       if (form.image) formData.append('image', form.image);
+
+      // Tell backend which existing extra images to keep (rest are treated as removed)
+      formData.append('existingImages', JSON.stringify(existingImages));
+
+      // New extra image files to add
+      newExtraFiles.forEach((file) => formData.append('images', file));
 
       const data = await updateProduct(id, formData);
       if (data._id) {
@@ -117,7 +167,7 @@ const [form, setForm] = useState({
       )}
 
       <form onSubmit={handleSubmit} className="bg-[var(--color-bg-card)] border border-[var(--color-line)] rounded-xl p-6 space-y-5">
-        {/* Image Upload */}
+        {/* Main Image Upload */}
         <div>
           <label className={labelClass}>Product Image</label>
           <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-[var(--color-line)] rounded-xl cursor-pointer hover:border-[var(--color-gold)] transition-colors overflow-hidden">
@@ -132,6 +182,67 @@ const [form, setForm] = useState({
             <input type="file" name="image" accept="image/*" onChange={handleChange} className="hidden" />
           </label>
           <p className="text-xs text-[var(--color-cream)]/35 mt-1.5">Leave unchanged to keep the existing image.</p>
+        </div>
+
+        {/* Additional Images */}
+        <div>
+          <label className={labelClass}>
+            Additional Photos ({totalExtraCount}/{MAX_EXTRA_IMAGES})
+          </label>
+
+          <div className="grid grid-cols-5 gap-3">
+            {/* Existing images already on the product */}
+            {existingImages.map((img, index) => (
+              <div
+                key={`existing-${index}`}
+                className="relative aspect-square rounded-lg overflow-hidden border border-[var(--color-line)]"
+              >
+                <img
+                  src={`${import.meta.env.VITE_API_URL}/${img}`}
+                  alt={`existing-${index}`}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeExistingImage(index)}
+                  className="absolute top-1 right-1 bg-black/60 hover:bg-red-500 text-white rounded-full p-1 transition-colors"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ))}
+
+            {/* Newly added images (not yet saved) */}
+            {newExtraPreviews.map((img, index) => (
+              <div
+                key={img.id}
+                className="relative aspect-square rounded-lg overflow-hidden border border-[var(--color-gold)]/50"
+              >
+                <img src={img.url} alt={`new-${index}`} className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => removeNewExtraImage(index)}
+                  className="absolute top-1 right-1 bg-black/60 hover:bg-red-500 text-white rounded-full p-1 transition-colors"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ))}
+
+            {totalExtraCount < MAX_EXTRA_IMAGES && (
+              <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-[var(--color-line)] rounded-lg cursor-pointer hover:border-[var(--color-gold)] transition-colors text-[var(--color-cream)]/35">
+                <Upload size={18} />
+                <span className="text-[11px] mt-1">Add</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleNewExtraImagesChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
         </div>
 
         {/* Name */}

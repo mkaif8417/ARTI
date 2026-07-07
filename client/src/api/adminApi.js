@@ -7,9 +7,7 @@ export const fetchProducts = async () => {
 };
 
 export const createProduct = async (formData) => {
-  const res = await axiosInstance.post('/products', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const res = await axiosInstance.post('/products', formData);
   return res.data;
 };
 
@@ -46,9 +44,7 @@ export const updateCategory = async (id, name) => {
   return res.data;
 };
 export const updateProduct = async (id, formData) => {
-  const res = await axiosInstance.put(`/products/${id}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const res = await axiosInstance.put(`/products/${id}`, formData);
   return res.data;
 };
 
@@ -56,4 +52,3 @@ export const fetchProductById = async (id) => {
   const res = await axiosInstance.get(`/products/${id}`);
   return res.data;
 };
-

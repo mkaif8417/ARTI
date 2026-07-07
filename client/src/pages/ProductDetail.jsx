@@ -69,10 +69,11 @@ const ProductDetail = () => {
   }
 
   // Support either a gallery array (product.images) or a single heroImage
-  const gallery =
-    Array.isArray(product.images) && product.images.length > 0
-      ? product.images
-      : [product.heroImage || product.image].filter(Boolean);
+
+const gallery =
+  Array.isArray(product.images) && product.images.length > 0
+    ? product.images
+    : [product.heroImage || product.image].filter(Boolean);
 
   const inStock = product.stock == null || product.stock > 0;
   const maxQty = product.stock != null ? Math.max(product.stock, 0) : 10;

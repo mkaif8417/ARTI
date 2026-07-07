@@ -25,7 +25,7 @@ router.post(
   isAdmin,
   upload.fields([
     { name: 'image', maxCount: 1 },
-    { name: 'heroImage', maxCount: 1 },
+    { name: 'images', maxCount: 5 },
   ]),
   createProduct
 );
@@ -36,7 +36,7 @@ router.put(
   isAdmin,
   upload.fields([
     { name: 'image', maxCount: 1 },
-    { name: 'heroImage', maxCount: 1 },
+    { name: 'images', maxCount: 5 },
   ]),
   updateProduct
 );

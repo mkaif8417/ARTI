@@ -39,7 +39,6 @@ const searchProducts = async (req, res) => {
       return res.status(400).json({ message: 'Search query is required' });
     }
 
-    // Find matching categories first, since category is a ref (ObjectId)
     const matchingCategories = await Category.find({
       name: { $regex: q, $options: 'i' },
     }).select('_id');
@@ -69,6 +68,8 @@ const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
 
+    const extraImages = req.files?.images ? req.files.images.map((f) => f.path) : [];
+
     const product = new Product({
       name,
       description,
@@ -76,7 +77,7 @@ const createProduct = async (req, res) => {
       category,
       stock,
       image: req.files?.image?.[0] ? req.files.image[0].path : '',
-      heroImage: req.files?.heroImage?.[0] ? req.files.heroImage[0].path : '',
+      images: extraImages,
     });
 
     const createdProduct = await product.save();
@@ -100,16 +101,28 @@ const updateProduct = async (req, res) => {
 
     product.name = name || product.name;
     product.description = description || product.description;
-    product.price = price || product.price;
+    product.price = price ?? product.price;
+product.stock = stock ?? product.stock;
     product.category = category || product.category;
-    product.stock = stock || product.stock;
+ 
 
     if (req.files?.image?.[0]) {
       product.image = req.files.image[0].path;
     }
-    if (req.files?.heroImage?.[0]) {
-      product.heroImage = req.files.heroImage[0].path;
-    }
+
+    // Append newly uploaded extra images to the existing ones
+    // Keep only the existing images that the admin did not remove
+if (req.body.existingImages) {
+  product.images = JSON.parse(req.body.existingImages);
+} else {
+  product.images = product.images || [];
+}
+
+// Add any newly uploaded images
+if (req.files?.images?.length) {
+  const newImages = req.files.images.map((f) => f.path);
+  product.images = [...product.images, ...newImages];
+}
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
