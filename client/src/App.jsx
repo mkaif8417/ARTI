@@ -15,10 +15,10 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
-import SearchPage from './pages/SearchPage';   // 👈 add this
+import SearchPage from './pages/SearchPage';   
+import Orders from './pages/Order';
 // Uncomment as you build:
 // import Products from './pages/Products';
-// import Orders from './pages/Orders';
 // import Profile from './pages/Profile';
 
 const PublicLayout = () => (
@@ -64,7 +64,7 @@ function App() {
             />
 
             {/* Protected pages also get Navbar */}
-            {/* <Route path="/orders"  element={<ProtectedRoute><Orders /></ProtectedRoute>} /> */}
+            <Route path="/orders"  element={<ProtectedRoute><Orders /></ProtectedRoute>} />
             {/* <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} /> */}
           </Route>
 
