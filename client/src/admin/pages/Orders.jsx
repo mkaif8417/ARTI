@@ -2,6 +2,16 @@ import { useEffect, useState } from 'react';
 import { fetchOrders, updateOrderStatus } from '../../api/adminApi';
 const STATUS_OPTIONS = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
+// Display label shown to the admin — keeps the underlying value ('processing')
+// unchanged so it still matches the Order.js status enum on the backend.
+const STATUS_LABELS = {
+  pending: 'Pending',
+  processing: 'Order Confirmed',
+  shipped: 'Shipped',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled',
+};
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,7 +94,7 @@ const Orders = () => {
                     >
                       {STATUS_OPTIONS.map((s) => (
                         <option key={s} value={s} className="bg-[var(--color-bg-card)] text-[var(--color-cream)]">
-                          {s}
+                          {STATUS_LABELS[s]}
                         </option>
                       ))}
                     </select>

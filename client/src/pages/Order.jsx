@@ -15,7 +15,7 @@ const C = {
 
 const STATUS_STYLES = {
   pending:    { color: '#E0B34D', label: 'Pending' },
-  processing: { color: '#4DA6E0', label: 'Processing' },
+  processing: { color: '#4DA6E0', label: 'Order Confirmed' },
   shipped:    { color: '#9B7FE0', label: 'Shipped' },
   delivered:  { color: '#4DD68C', label: 'Delivered' },
   cancelled:  { color: '#E05C5C', label: 'Cancelled' },
