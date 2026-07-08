@@ -26,6 +26,7 @@ const inputStyle = {
   fontFamily: "'Inter', sans-serif",
   fontSize: 14,
   outline: 'none',
+  boxSizing: 'border-box',
 };
 
 const labelStyle = {
@@ -52,6 +53,90 @@ const loadRazorpayScript = () =>
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
   });
+
+// Responsive rules that plain inline styles can't express (media queries).
+// Scoped with a unique wrapper class so it can't leak into the rest of the app.
+const ResponsiveStyles = () => (
+  <style>{`
+    .checkout-page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px 96px;
+      font-family: 'Inter', sans-serif;
+      color: ${C.cream};
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 48px;
+      box-sizing: border-box;
+    }
+
+    .checkout-fields-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .checkout-summary-card {
+      background: ${C.bgCard};
+      border: 1px solid ${C.line};
+      border-radius: 4px;
+      padding: 24px;
+      height: fit-content;
+    }
+
+    .checkout-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      margin-bottom: 8px;
+      font-size: 30px;
+    }
+
+    .checkout-place-btn {
+      width: 100%;
+      padding: 14px 0;
+      background: ${C.gold};
+      border: none;
+      color: ${C.bg};
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 860px) {
+      .checkout-page {
+        grid-template-columns: 1fr;
+        gap: 36px;
+        padding: 32px 20px 72px;
+      }
+      .checkout-summary-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .checkout-page {
+        padding: 24px 16px 56px;
+        gap: 28px;
+      }
+      .checkout-title {
+        font-size: 24px;
+      }
+      .checkout-fields-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .checkout-summary-card {
+        padding: 18px;
+      }
+      .checkout-place-btn {
+        padding: 15px 0;
+        font-size: 12.5px;
+      }
+    }
+  `}</style>
+);
 
 const Checkout = () => {
   const { items, cartTotal, clearCart } = useCart();
@@ -227,6 +312,7 @@ const Checkout = () => {
         padding: '80px 20px',
         color: C.cream,
         fontFamily: "'Inter', sans-serif",
+        textAlign: 'center',
       }}>
         <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 300 }}>
           Your bag is empty
@@ -246,203 +332,180 @@ const Checkout = () => {
   }
 
   return (
-    <section style={{
-      maxWidth: 1000,
-      margin: '0 auto',
-      padding: '48px 24px 96px',
-      fontFamily: "'Inter', sans-serif",
-      color: C.cream,
-      display: 'grid',
-      gridTemplateColumns: '1.3fr 1fr',
-      gap: 48,
-    }}>
-      {/* ---------- Left: Shipping + Payment ---------- */}
-      <div>
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 30,
-          fontWeight: 400,
-          marginBottom: 8,
-        }}>
-          Checkout
-        </h1>
+    <>
+      <ResponsiveStyles />
+      <section className="checkout-page">
+        {/* ---------- Left: Shipping + Payment ---------- */}
+        <div>
+          <h1 className="checkout-title">Checkout</h1>
 
-        {MOCK_PAYMENT && (
-          <p style={{
-            fontSize: 11.5,
-            color: C.creamMid,
-            border: `1px dashed ${C.goldMuted}`,
-            padding: '8px 12px',
-            borderRadius: 2,
-            marginBottom: 24,
-          }}>
-            Dev mode: online payments are simulated (no real Razorpay call).
-          </p>
-        )}
-
-        <p style={{ ...labelStyle, marginBottom: 14, fontSize: 12, marginTop: MOCK_PAYMENT ? 0 : 20 }}>
-          Shipping Details
-        </p>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 32 }}>
-          <div>
-            <label style={labelStyle}>Full Name *</label>
-            <input style={inputStyle} name="fullName" value={form.fullName} onChange={handleChange} />
-          </div>
-          <div>
-            <label style={labelStyle}>Phone Number *</label>
-            <input style={inputStyle} name="phone" value={form.phone} onChange={handleChange} />
-          </div>
-          <div>
-            <label style={labelStyle}>Address *</label>
-            <input style={inputStyle} name="address" value={form.address} onChange={handleChange} />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <div>
-              <label style={labelStyle}>City *</label>
-              <input style={inputStyle} name="city" value={form.city} onChange={handleChange} />
-            </div>
-            <div>
-              <label style={labelStyle}>State *</label>
-              <input style={inputStyle} name="state" value={form.state} onChange={handleChange} />
-            </div>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <div>
-              <label style={labelStyle}>Postal Code *</label>
-              <input style={inputStyle} name="postalCode" value={form.postalCode} onChange={handleChange} />
-            </div>
-            <div>
-              <label style={labelStyle}>Country *</label>
-              <input style={inputStyle} name="country" value={form.country} onChange={handleChange} />
-            </div>
-          </div>
-        </div>
-
-        <p style={{ ...labelStyle, marginBottom: 14, fontSize: 12 }}>Payment Method</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
-          {[
-            { value: 'cod', label: 'Cash on Delivery' },
-            { value: 'razorpay', label: 'Pay Online (Razorpay)' },
-          ].map((option) => (
-            <label
-              key={option.value}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                border: `1px solid ${paymentMethod === option.value ? C.gold : C.line}`,
-                borderRadius: 2,
-                padding: '12px 16px',
-                cursor: 'pointer',
-              }}
-            >
-              <input
-                type="radio"
-                name="paymentMethod"
-                value={option.value}
-                checked={paymentMethod === option.value}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              />
-              <span style={{ fontSize: 14 }}>{option.label}</span>
-            </label>
-          ))}
-        </div>
-
-        {error && (
-          <p style={{ color: '#e07a7a', fontSize: 13, marginBottom: 12 }}>{error}</p>
-        )}
-
-        <button
-          type="button"
-          onClick={handlePlaceOrder}
-          disabled={placing}
-          style={{
-            width: '100%',
-            padding: '14px 0',
-            background: C.gold,
-            border: 'none',
-            color: C.bg,
-            fontSize: 12,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            fontWeight: 700,
-            borderRadius: 2,
-            cursor: placing ? 'not-allowed' : 'pointer',
-            opacity: placing ? 0.6 : 1,
-          }}
-        >
-          {placing ? 'Placing Order...' : 'Place Order'}
-        </button>
-      </div>
-
-      {/* ---------- Right: Order summary ---------- */}
-      <div style={{
-        background: C.bgCard,
-        border: `1px solid ${C.line}`,
-        borderRadius: 4,
-        padding: 24,
-        height: 'fit-content',
-      }}>
-        <p style={{ ...labelStyle, marginBottom: 18, fontSize: 12 }}>Order Summary</p>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 20 }}>
-          {items.map((item) => (
-            <div
-              key={`${item._id}-${item.size || 'none'}`}
-              style={{ display: 'flex', gap: 12 }}
-            >
-              <div style={{
-                width: 56, height: 56, borderRadius: 4, flexShrink: 0,
-                backgroundColor: C.bg,
-                backgroundImage: item.image ? `url(${getImageUrl(item.image)})` : 'none',
-                backgroundSize: 'cover', backgroundPosition: 'center',
-              }} />
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 13.5, color: C.cream }}>{item.name}</p>
-                {item.size && (
-                  <p style={{ fontSize: 11, color: C.creamMid }}>Size: {item.size}</p>
-                )}
-                <p style={{ fontSize: 11, color: C.creamMid }}>Qty: {item.quantity}</p>
-              </div>
-              <p style={{ fontSize: 13, color: C.gold, fontWeight: 600, whiteSpace: 'nowrap' }}>
-                ₹{(item.price * item.quantity).toFixed(2)}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: C.creamMid }}>
-            <span>Subtotal</span>
-            <span>₹{cartTotal.toFixed(2)}</span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: C.creamMid }}>
-            <span>Shipping</span>
-            <span>{shippingPrice === 0 ? 'Free' : `₹${shippingPrice.toFixed(2)}`}</span>
-          </div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'baseline',
-            paddingTop: 8,
-            borderTop: `1px solid ${C.line}`,
-          }}>
-            <span style={{ fontSize: 12, color: C.creamMid, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Total
-            </span>
-            <span style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 24,
-              fontWeight: 600,
-              color: C.gold,
+          {MOCK_PAYMENT && (
+            <p style={{
+              fontSize: 11.5,
+              color: C.creamMid,
+              border: `1px dashed ${C.goldMuted}`,
+              padding: '8px 12px',
+              borderRadius: 2,
+              marginBottom: 24,
             }}>
-              ₹{totalPrice.toFixed(2)}
-            </span>
+              Dev mode: online payments are simulated (no real Razorpay call).
+            </p>
+          )}
+
+          <p style={{ ...labelStyle, marginBottom: 14, fontSize: 12, marginTop: MOCK_PAYMENT ? 0 : 20 }}>
+            Shipping Details
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 32 }}>
+            <div>
+              <label style={labelStyle}>Full Name *</label>
+              <input style={inputStyle} name="fullName" value={form.fullName} onChange={handleChange} />
+            </div>
+            <div>
+              <label style={labelStyle}>Phone Number *</label>
+              <input style={inputStyle} name="phone" value={form.phone} onChange={handleChange} />
+            </div>
+            <div>
+              <label style={labelStyle}>Address *</label>
+              <input style={inputStyle} name="address" value={form.address} onChange={handleChange} />
+            </div>
+            <div className="checkout-fields-row">
+              <div>
+                <label style={labelStyle}>City *</label>
+                <input style={inputStyle} name="city" value={form.city} onChange={handleChange} />
+              </div>
+              <div>
+                <label style={labelStyle}>State *</label>
+                <input style={inputStyle} name="state" value={form.state} onChange={handleChange} />
+              </div>
+            </div>
+            <div className="checkout-fields-row">
+              <div>
+                <label style={labelStyle}>Postal Code *</label>
+                <input style={inputStyle} name="postalCode" value={form.postalCode} onChange={handleChange} />
+              </div>
+              <div>
+                <label style={labelStyle}>Country *</label>
+                <input style={inputStyle} name="country" value={form.country} onChange={handleChange} />
+              </div>
+            </div>
+          </div>
+
+          <p style={{ ...labelStyle, marginBottom: 14, fontSize: 12 }}>Payment Method</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+            {[
+              { value: 'cod', label: 'Cash on Delivery' },
+              { value: 'razorpay', label: 'Pay Online (Razorpay)' },
+            ].map((option) => (
+              <label
+                key={option.value}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  border: `1px solid ${paymentMethod === option.value ? C.gold : C.line}`,
+                  borderRadius: 2,
+                  padding: '12px 16px',
+                  cursor: 'pointer',
+                }}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value={option.value}
+                  checked={paymentMethod === option.value}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <span style={{ fontSize: 14 }}>{option.label}</span>
+              </label>
+            ))}
+          </div>
+
+          {error && (
+            <p style={{ color: '#e07a7a', fontSize: 13, marginBottom: 12 }}>{error}</p>
+          )}
+
+          <button
+            type="button"
+            onClick={handlePlaceOrder}
+            disabled={placing}
+            className="checkout-place-btn"
+            style={{
+              cursor: placing ? 'not-allowed' : 'pointer',
+              opacity: placing ? 0.6 : 1,
+            }}
+          >
+            {placing ? 'Placing Order...' : 'Place Order'}
+          </button>
+        </div>
+
+        {/* ---------- Right: Order summary ---------- */}
+        <div className="checkout-summary-card">
+          <p style={{ ...labelStyle, marginBottom: 18, fontSize: 12 }}>Order Summary</p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 20 }}>
+            {items.map((item) => (
+              <div
+                key={`${item._id}-${item.size || 'none'}`}
+                style={{ display: 'flex', gap: 12 }}
+              >
+                <div style={{
+                  width: 56, height: 56, borderRadius: 4, flexShrink: 0,
+                  backgroundColor: C.bg,
+                  backgroundImage: item.image ? `url(${getImageUrl(item.image)})` : 'none',
+                  backgroundSize: 'cover', backgroundPosition: 'center',
+                }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{
+                    fontSize: 13.5, color: C.cream,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {item.name}
+                  </p>
+                  {item.size && (
+                    <p style={{ fontSize: 11, color: C.creamMid }}>Size: {item.size}</p>
+                  )}
+                  <p style={{ fontSize: 11, color: C.creamMid }}>Qty: {item.quantity}</p>
+                </div>
+                <p style={{ fontSize: 13, color: C.gold, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                  ₹{(item.price * item.quantity).toFixed(2)}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: C.creamMid }}>
+              <span>Subtotal</span>
+              <span>₹{cartTotal.toFixed(2)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: C.creamMid }}>
+              <span>Shipping</span>
+              <span>{shippingPrice === 0 ? 'Free' : `₹${shippingPrice.toFixed(2)}`}</span>
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              paddingTop: 8,
+              borderTop: `1px solid ${C.line}`,
+            }}>
+              <span style={{ fontSize: 12, color: C.creamMid, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                Total
+              </span>
+              <span style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: 24,
+                fontWeight: 600,
+                color: C.gold,
+              }}>
+                ₹{totalPrice.toFixed(2)}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 
