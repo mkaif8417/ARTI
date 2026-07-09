@@ -107,11 +107,26 @@ const orderSchema = new mongoose.Schema(
     paidAt: {
       type: Date,
     },
-    status: {
-      type: String,
-      enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'return_requested', 'exchange_requested'],
-      default: 'pending',
-    },
+  status: {
+  type: String,
+  enum: [
+    'pending',
+    'processing',
+    'shipped',
+    'delivered',
+    'cancelled',
+    'return_requested',
+    'return_approved',
+    'return_received',
+    'refunded',
+    'exchange_requested',
+    'exchange_approved',
+    'exchange_received',
+    'exchange_shipped',
+    'exchange_completed',
+  ],
+  default: 'pending',
+},
     request: {
       type: requestSchema,
       default: null,

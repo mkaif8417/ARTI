@@ -11,19 +11,27 @@ const {
   cancelOrder,
   requestReturnOrExchange,
   resolveRequest,
+  markItemReceived,
+  issueRefund,
+  shipReplacement,
+  completeExchange,
 } = require('../controllers/orderController');
 
 // Logged-in user routes
-router.post('/', protect, createOrder);              // place a new order
-router.get('/myorders', protect, getMyOrders);        // user's own order history
-router.get('/:id', protect, getOrderById);            // single order (controller checks ownership)
-router.put('/:id/cancel', protect, cancelOrder);       // user cancels their own order
-router.put('/:id/request', protect, requestReturnOrExchange); // user requests return/exchange
+router.post('/', protect, createOrder);
+router.get('/myorders', protect, getMyOrders);
+router.get('/:id', protect, getOrderById);
+router.put('/:id/cancel', protect, cancelOrder);
+router.put('/:id/request', protect, requestReturnOrExchange);
 
 // Admin-only routes
-router.get('/', protect, isAdmin, getAllOrders);              // view all orders
-router.put('/:id/status', protect, isAdmin, updateOrderStatus); // change status e.g. shipped/delivered
-router.put('/:id/resolve-request', protect, isAdmin, resolveRequest); // approve/reject return/exchange
+router.get('/', protect, isAdmin, getAllOrders);
+router.put('/:id/status', protect, isAdmin, updateOrderStatus);
+router.put('/:id/resolve-request', protect, isAdmin, resolveRequest);
+router.put('/:id/mark-received', protect, isAdmin, markItemReceived);
+router.put('/:id/refund', protect, isAdmin, issueRefund);
+router.put('/:id/ship-replacement', protect, isAdmin, shipReplacement);
+router.put('/:id/complete-exchange', protect, isAdmin, completeExchange);
 router.delete('/:id', protect, isAdmin, deleteOrder);
 
 module.exports = router;

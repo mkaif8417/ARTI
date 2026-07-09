@@ -130,7 +130,7 @@ const cancelOrder = async (req, res) => {
     order.request = {
       type: 'cancel',
       reason: req.body.reason || 'No reason provided',
-      status: 'approved', // customer-initiated cancels before shipping are auto-approved
+      status: 'approved',
       requestedAt: new Date(),
       resolvedAt: new Date(),
     };
@@ -147,7 +147,7 @@ const cancelOrder = async (req, res) => {
 // @access  Private
 const requestReturnOrExchange = async (req, res) => {
   try {
-    const { type, reason, exchangeFor } = req.body; // type: 'return' | 'exchange'
+    const { type, reason, exchangeFor } = req.body;
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: 'Order not found' });
 
@@ -168,7 +168,7 @@ const requestReturnOrExchange = async (req, res) => {
       type,
       reason,
       exchangeFor: type === 'exchange' ? exchangeFor : undefined,
-      status: 'pending', // needs admin approval
+      status: 'pending',
       requestedAt: new Date(),
     };
 
@@ -184,22 +184,115 @@ const requestReturnOrExchange = async (req, res) => {
 // @access  Private/Admin
 const resolveRequest = async (req, res) => {
   try {
-    const { decision, adminNote } = req.body; // decision: 'approved' | 'rejected'
+    const { decision, adminNote } = req.body;
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: 'Order not found' });
     if (!order.request) return res.status(400).json({ message: 'No pending request on this order' });
+    if (order.request.status !== 'pending') {
+      return res.status(400).json({ message: 'This request has already been resolved' });
+    }
+    if (!['approved', 'rejected'].includes(decision)) {
+      return res.status(400).json({ message: 'Invalid decision' });
+    }
 
     order.request.status = decision;
     order.request.resolvedAt = new Date();
     order.request.adminNote = adminNote || '';
 
     if (decision === 'approved') {
-      order.status = order.request.type === 'return' ? 'return_requested' : 'exchange_requested';
-      // you may want a further step once the item is physically received back —
-      // e.g. a 'refunded' or 'exchange_shipped' status, same pattern as above
+      order.status = order.request.type === 'return' ? 'return_approved' : 'exchange_approved';
     } else {
       order.status = 'delivered';
     }
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Admin marks the returned/exchanged item as physically received
+// @route   PUT /api/orders/:id/mark-received
+// @access  Private/Admin
+const markItemReceived = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (!order.request) return res.status(400).json({ message: 'No request on this order' });
+
+    if (order.status === 'return_approved') {
+      order.status = 'return_received';
+    } else if (order.status === 'exchange_approved') {
+      order.status = 'exchange_received';
+    } else {
+      return res.status(400).json({ message: 'Order is not awaiting item receipt' });
+    }
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Admin issues a refund for a received return
+// @route   PUT /api/orders/:id/refund
+// @access  Private/Admin
+const issueRefund = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    if (order.status !== 'return_received') {
+      return res.status(400).json({ message: 'Order must have the item received before refunding' });
+    }
+
+    order.status = 'refunded';
+    order.isPaid = false;
+    order.request.resolvedAt = order.request.resolvedAt || new Date();
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Admin ships the replacement item for an exchange
+// @route   PUT /api/orders/:id/ship-replacement
+// @access  Private/Admin
+const shipReplacement = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    if (order.status !== 'exchange_received') {
+      return res.status(400).json({ message: 'Order must have the original item received before shipping replacement' });
+    }
+
+    order.status = 'exchange_shipped';
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Admin marks an exchange as fully completed
+// @route   PUT /api/orders/:id/complete-exchange
+// @access  Private/Admin
+const completeExchange = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    if (order.status !== 'exchange_shipped') {
+      return res.status(400).json({ message: 'Replacement must be shipped before completing the exchange' });
+    }
+
+    order.status = 'exchange_completed';
 
     const updatedOrder = await order.save();
     res.json(updatedOrder);
@@ -218,4 +311,8 @@ module.exports = {
   cancelOrder,
   requestReturnOrExchange,
   resolveRequest,
+  markItemReceived,
+  issueRefund,
+  shipReplacement,
+  completeExchange,
 };

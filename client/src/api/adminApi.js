@@ -58,3 +58,24 @@ export const resolveOrderRequest = async (id, decision, adminNote) => {
   const res = await axiosInstance.put(`/orders/${id}/resolve-request`, { decision, adminNote });
   return res.data;
 };
+
+
+export const markItemReceived = async (id) => {
+  const res = await axiosInstance.put(`/orders/${id}/mark-received`);
+  return res.data;
+};
+
+export const issueRefund = async (id) => {
+  const res = await axiosInstance.put(`/orders/${id}/refund`);
+  return res.data;
+};
+
+export const shipReplacement = async (id) => {
+  const res = await axiosInstance.put(`/orders/${id}/ship-replacement`);
+  return res.data;
+};
+
+export const completeExchange = async (id) => {
+  const res = await axiosInstance.put(`/orders/${id}/complete-exchange`);
+  return res.data;
+};

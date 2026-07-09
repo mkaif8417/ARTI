@@ -15,17 +15,26 @@ const C = {
 };
 
 const STATUS_STYLES = {
-  pending:            { color: '#E0B34D', label: 'Pending' },
-  processing:         { color: '#4DA6E0', label: 'Order Confirmed' },
-  shipped:            { color: '#9B7FE0', label: 'Shipped' },
-  delivered:          { color: '#4DD68C', label: 'Delivered' },
-  cancelled:          { color: '#E05C5C', label: 'Cancelled' },
-  return_requested:   { color: '#E08A3D', label: 'Return Requested' },
-  exchange_requested: { color: '#3DC5E0', label: 'Exchange Requested' },
+  pending:             { color: '#E0B34D', label: 'Pending' },
+  processing:          { color: '#4DA6E0', label: 'Order Confirmed' },
+  shipped:             { color: '#9B7FE0', label: 'Shipped' },
+  delivered:           { color: '#4DD68C', label: 'Delivered' },
+  cancelled:           { color: '#E05C5C', label: 'Cancelled' },
+  return_requested:    { color: '#E08A3D', label: 'Return Requested' },
+  return_approved:     { color: '#4DA6E0', label: 'Return Approved' },
+  return_received:     { color: '#9B7FE0', label: 'Item Received' },
+  refunded:            { color: '#4DD68C', label: 'Refunded' },
+  exchange_requested:  { color: '#3DC5E0', label: 'Exchange Requested' },
+  exchange_approved:   { color: '#4DA6E0', label: 'Exchange Approved' },
+  exchange_received:   { color: '#9B7FE0', label: 'Item Received' },
+  exchange_shipped:    { color: '#3DC5E0', label: 'Replacement Shipped' },
+  exchange_completed:  { color: '#4DD68C', label: 'Exchange Completed' },
 };
 
-// Ordered steps for the progress tracker (cancelled/return/exchange shown separately)
+// Ordered steps for each type of progress tracker
 const TRACK_STEPS = ['pending', 'processing', 'shipped', 'delivered'];
+const RETURN_STEPS = ['return_requested', 'return_approved', 'return_received', 'refunded'];
+const EXCHANGE_STEPS = ['exchange_requested', 'exchange_approved', 'exchange_received', 'exchange_shipped', 'exchange_completed'];
 
 const StatusBadge = ({ status }) => {
   const s = STATUS_STYLES[status] || STATUS_STYLES.pending;
@@ -49,32 +58,13 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-const OrderTracker = ({ status }) => {
-  if (status === 'cancelled') {
-    return (
-      <div style={{ fontSize: 13, color: STATUS_STYLES.cancelled.color, marginTop: 12 }}>
-        This order was cancelled.
-      </div>
-    );
-  }
-
-  if (status === 'return_requested' || status === 'exchange_requested') {
-    const s = STATUS_STYLES[status];
-    return (
-      <div style={{ fontSize: 13, color: s.color, marginTop: 12 }}>
-        {status === 'return_requested'
-          ? 'Your return request is being reviewed.'
-          : 'Your exchange request is being reviewed.'}
-      </div>
-    );
-  }
-
-  const currentIndex = TRACK_STEPS.indexOf(status);
-  const progressPercent = TRACK_STEPS.length > 1 ? (currentIndex / (TRACK_STEPS.length - 1)) * 100 : 0;
+// Shared animated step-progress bar — used for the main order track, and reused
+// for return/exchange tracks so we don't duplicate the dot/line/shimmer markup.
+const StepProgress = ({ steps, currentIndex, isFinalStep }) => {
+  const progressPercent = steps.length > 1 ? (currentIndex / (steps.length - 1)) * 100 : 0;
 
   return (
     <div style={{ position: 'relative', marginTop: 24, marginBottom: 4, padding: '0 6px' }}>
-      {/* keyframes for the pulse + shimmer */}
       <style>{`
         @keyframes trackerPulse {
           0%   { box-shadow: 0 0 0 0 ${C.gold}80; }
@@ -87,42 +77,24 @@ const OrderTracker = ({ status }) => {
         }
       `}</style>
 
-      {/* base line */}
       <div
         style={{
-          position: 'absolute',
-          top: 6,
-          left: 6,
-          right: 6,
-          height: 2,
-          background: C.line,
-          zIndex: 0,
+          position: 'absolute', top: 6, left: 6, right: 6, height: 2,
+          background: C.line, zIndex: 0,
         }}
       />
 
-      {/* gold progress line */}
       <div
         style={{
-          position: 'absolute',
-          top: 6,
-          left: 6,
-          height: 2,
+          position: 'absolute', top: 6, left: 6, height: 2,
           width: `calc(${progressPercent}% * (100% - 12px) / 100%)`,
-          background: C.gold,
-          zIndex: 1,
-          overflow: 'hidden',
-          transition: 'width 0.3s',
+          background: C.gold, zIndex: 1, overflow: 'hidden', transition: 'width 0.3s',
         }}
       >
-        {/* shimmer only shows if not yet delivered (order still "moving") */}
-        {status !== 'delivered' && (
+        {!isFinalStep && (
           <div
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '30%',
-              height: '100%',
+              position: 'absolute', top: 0, left: 0, width: '30%', height: '100%',
               background: `linear-gradient(90deg, transparent, ${C.cream}CC, transparent)`,
               animation: 'trackerShimmer 1.8s ease-in-out infinite',
             }}
@@ -131,16 +103,14 @@ const OrderTracker = ({ status }) => {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
-        {TRACK_STEPS.map((step, i) => {
+        {steps.map((step, i) => {
           const reached = i <= currentIndex;
           const isCurrent = i === currentIndex;
           return (
             <div key={step} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '0 1 auto' }}>
               <div
                 style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: '50%',
+                  width: 12, height: 12, borderRadius: '50%',
                   background: reached ? C.gold : C.bgCard,
                   border: `2px solid ${reached ? C.gold : C.line}`,
                   transition: 'background 0.3s, border-color 0.3s',
@@ -149,10 +119,7 @@ const OrderTracker = ({ status }) => {
               />
               <span
                 style={{
-                  marginTop: 6,
-                  fontSize: 10,
-                  letterSpacing: '0.02em',
-                  textAlign: 'center',
+                  marginTop: 6, fontSize: 10, letterSpacing: '0.02em', textAlign: 'center',
                   color: reached ? C.cream : C.creamMid,
                   whiteSpace: 'nowrap',
                   fontWeight: isCurrent ? 700 : 400,
@@ -166,6 +133,69 @@ const OrderTracker = ({ status }) => {
       </div>
     </div>
   );
+};
+
+const OrderTracker = ({ status, request }) => {
+  if (status === 'cancelled') {
+    return (
+      <div style={{ fontSize: 13, color: STATUS_STYLES.cancelled.color, marginTop: 12 }}>
+        This order was cancelled.
+        {request?.reason && (
+          <span style={{ color: C.creamMid }}> — Reason: {request.reason}</span>
+        )}
+      </div>
+    );
+  }
+
+  // Return flow: requested -> approved -> received -> refunded
+  if (RETURN_STEPS.includes(status)) {
+    const currentIndex = RETURN_STEPS.indexOf(status);
+    return (
+      <div>
+        <div style={{ fontSize: 13, color: STATUS_STYLES[status].color, marginBottom: 4 }}>
+          {status === 'return_requested' && 'Your return request is being reviewed.'}
+          {status === 'return_approved' && 'Return approved — please ship the item back to us.'}
+          {status === 'return_received' && "We've received your item — refund in progress."}
+          {status === 'refunded' && 'Refund has been issued.'}
+        </div>
+        <StepProgress steps={RETURN_STEPS} currentIndex={currentIndex} isFinalStep={status === 'refunded'} />
+      </div>
+    );
+  }
+
+  // Exchange flow: requested -> approved -> received -> shipped -> completed
+  if (EXCHANGE_STEPS.includes(status)) {
+    const currentIndex = EXCHANGE_STEPS.indexOf(status);
+    return (
+      <div>
+        <div style={{ fontSize: 13, color: STATUS_STYLES[status].color, marginBottom: 4 }}>
+          {status === 'exchange_requested' && 'Your exchange request is being reviewed.'}
+          {status === 'exchange_approved' && 'Exchange approved — please ship the item back to us.'}
+          {status === 'exchange_received' && "We've received your item — preparing your replacement."}
+          {status === 'exchange_shipped' && 'Your replacement item is on its way.'}
+          {status === 'exchange_completed' && 'Exchange completed.'}
+        </div>
+        <StepProgress steps={EXCHANGE_STEPS} currentIndex={currentIndex} isFinalStep={status === 'exchange_completed'} />
+      </div>
+    );
+  }
+
+  // A previously-rejected return/exchange lands back on 'delivered' — surface that context.
+  if (status === 'delivered' && request?.status === 'rejected') {
+    return (
+      <div>
+        <div style={{ fontSize: 13, color: '#E05C5C', marginBottom: 4 }}>
+          Your {request.type} request was declined.
+          {request.adminNote && <span style={{ color: C.creamMid }}> — {request.adminNote}</span>}
+        </div>
+        <StepProgress steps={TRACK_STEPS} currentIndex={TRACK_STEPS.indexOf('delivered')} isFinalStep />
+      </div>
+    );
+  }
+
+  // Default: main order lifecycle
+  const currentIndex = TRACK_STEPS.indexOf(status);
+  return <StepProgress steps={TRACK_STEPS} currentIndex={currentIndex} isFinalStep={status === 'delivered'} />;
 };
 
 const OrderCard = ({ order, onUpdated }) => {
@@ -240,7 +270,7 @@ const OrderCard = ({ order, onUpdated }) => {
       {/* Expanded detail */}
       {expanded && (
         <div style={{ padding: '0 24px 24px', borderTop: `1px solid ${C.line}` }}>
-          <OrderTracker status={order.status} />
+          <OrderTracker status={order.status} request={order.request} />
 
           <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
             {order.orderItems.map((item) => (
@@ -306,7 +336,6 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       const { data } = await axiosInstance.get('/orders/myorders');
-      // newest first
       const sorted = [...data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setOrders(sorted);
       setError('');
@@ -324,7 +353,6 @@ const Orders = () => {
     }
     fetchOrders();
 
-    // Poll every 20s so status updates from admin panel reflect here
     const interval = setInterval(fetchOrders, 20000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -341,7 +369,6 @@ const Orders = () => {
     margin: '0 auto',
   };
 
-  // Not logged in
   if (!loading && !getToken()) {
     return (
       <div style={containerStyle}>
