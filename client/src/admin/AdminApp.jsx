@@ -8,6 +8,7 @@ import Products from './pages/Products';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
 import Orders from './pages/Orders';
+import CancelledOrders from './pages/CancelledOrders';   // add this import
 import Categories from './pages/Categories';
 import Users from './pages/Users';
 import ForgotPassword from './pages/ForgotPassword';   // add this import
@@ -35,6 +36,7 @@ const AdminApp = () => (
       <Route path="products/add"      element={<AddProduct />} />
       <Route path="products/edit/:id" element={<EditProduct />} />
       <Route path="orders"            element={<Orders />} />
+      <Route path="cancelled-orders"  element={<CancelledOrders />} />
       <Route path="categories"        element={<Categories />} />
       <Route path="users"             element={<Users />} />
     </Route>

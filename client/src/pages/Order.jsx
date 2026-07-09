@@ -1,10 +1,9 @@
-
-
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import { getImageUrl } from '../api/api';
 import { useAuth } from '../context/AuthContext';
+import OrderActions from '../components/OrderActions';
 
 const C = {
   bg:        '#102B2A',
@@ -16,14 +15,16 @@ const C = {
 };
 
 const STATUS_STYLES = {
-  pending:    { color: '#E0B34D', label: 'Pending' },
-  processing: { color: '#4DA6E0', label: 'Order Confirmed' },
-  shipped:    { color: '#9B7FE0', label: 'Shipped' },
-  delivered:  { color: '#4DD68C', label: 'Delivered' },
-  cancelled:  { color: '#E05C5C', label: 'Cancelled' },
+  pending:            { color: '#E0B34D', label: 'Pending' },
+  processing:         { color: '#4DA6E0', label: 'Order Confirmed' },
+  shipped:            { color: '#9B7FE0', label: 'Shipped' },
+  delivered:          { color: '#4DD68C', label: 'Delivered' },
+  cancelled:          { color: '#E05C5C', label: 'Cancelled' },
+  return_requested:   { color: '#E08A3D', label: 'Return Requested' },
+  exchange_requested: { color: '#3DC5E0', label: 'Exchange Requested' },
 };
 
-// Ordered steps for the progress tracker (cancelled is shown separately)
+// Ordered steps for the progress tracker (cancelled/return/exchange shown separately)
 const TRACK_STEPS = ['pending', 'processing', 'shipped', 'delivered'];
 
 const StatusBadge = ({ status }) => {
@@ -53,6 +54,17 @@ const OrderTracker = ({ status }) => {
     return (
       <div style={{ fontSize: 13, color: STATUS_STYLES.cancelled.color, marginTop: 12 }}>
         This order was cancelled.
+      </div>
+    );
+  }
+
+  if (status === 'return_requested' || status === 'exchange_requested') {
+    const s = STATUS_STYLES[status];
+    return (
+      <div style={{ fontSize: 13, color: s.color, marginTop: 12 }}>
+        {status === 'return_requested'
+          ? 'Your return request is being reviewed.'
+          : 'Your exchange request is being reviewed.'}
       </div>
     );
   }
@@ -156,7 +168,7 @@ const OrderTracker = ({ status }) => {
   );
 };
 
-const OrderCard = ({ order }) => {
+const OrderCard = ({ order, onUpdated }) => {
   const [expanded, setExpanded] = useState(false);
   const itemCount = order.orderItems.reduce((sum, it) => sum + it.quantity, 0);
 
@@ -275,6 +287,10 @@ const OrderCard = ({ order }) => {
               </div>
             </div>
           )}
+
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: `1px solid ${C.line}` }}>
+            <OrderActions order={order} onUpdated={onUpdated} />
+          </div>
         </div>
       )}
     </div>
@@ -414,7 +430,7 @@ const Orders = () => {
         {!loading && !error && orders.length > 0 && (
           <div>
             {orders.map((order) => (
-              <OrderCard key={order._id} order={order} />
+              <OrderCard key={order._id} order={order} onUpdated={fetchOrders} />
             ))}
           </div>
         )}

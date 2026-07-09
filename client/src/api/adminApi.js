@@ -52,3 +52,9 @@ export const fetchProductById = async (id) => {
   const res = await axiosInstance.get(`/products/${id}`);
   return res.data;
 };
+
+// src/api/adminApi.js — add
+export const resolveOrderRequest = async (id, decision, adminNote) => {
+  const res = await axiosInstance.put(`/orders/${id}/resolve-request`, { decision, adminNote });
+  return res.data;
+};

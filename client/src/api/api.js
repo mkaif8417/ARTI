@@ -1,6 +1,6 @@
 // Development
 // const SERVER_URL = 'http://localhost:5000';
-
+import axiosInstance from './axiosInstance';
 // Production (Vercel + Render)
 const SERVER_URL = import.meta.env.VITE_API_URL;
 
@@ -31,3 +31,14 @@ export const getImageUrl = (path) => {
   const cleanPath = path.replace(/\\/g, '/');
   return `${SERVER_URL}/${cleanPath}`;
 };
+// src/api/userApi.js (or wherever customer order calls live)
+export const cancelOrder = async (id, reason) => {
+  const res = await axiosInstance.put(`/orders/${id}/cancel`, { reason });
+  return res.data;
+};
+
+export const requestReturnOrExchange = async (id, type, reason, exchangeFor) => {
+  const res = await axiosInstance.put(`/orders/${id}/request`, { type, reason, exchangeFor });
+  return res.data;
+};
+

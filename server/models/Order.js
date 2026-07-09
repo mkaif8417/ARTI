@@ -34,6 +34,39 @@ const shippingAddressSchema = new mongoose.Schema({
   phone: { type: String, required: true },
 });
 
+const requestSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ['cancel', 'return', 'exchange'],
+      required: true,
+    },
+    reason: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'pending',
+    },
+    exchangeFor: {
+      type: String,
+    },
+    requestedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    resolvedAt: {
+      type: Date,
+    },
+    adminNote: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
+
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -76,8 +109,12 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+      enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'return_requested', 'exchange_requested'],
       default: 'pending',
+    },
+    request: {
+      type: requestSchema,
+      default: null,
     },
   },
   {

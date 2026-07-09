@@ -1,10 +1,11 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, Tag, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Tag, XCircle, LogOut } from 'lucide-react';
 
 const links = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/admin/products', label: 'Products', icon: Package },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingCart },
+  { to: '/admin/cancelled-orders', label: 'Cancelled Orders', icon: XCircle },
   { to: '/admin/categories', label: 'Categories', icon: Tag },
 ];
 
